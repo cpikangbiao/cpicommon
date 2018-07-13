@@ -1,0 +1,36 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "currency",
+            "otherEntityName": "currency",
+            "otherEntityField": "nameAbbre",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "currencyRate"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "rateDate",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "currencyRate",
+            "fieldType": "Double",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20180425062644",
+    "entityTableName": "currency_rate",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": true,
+    "microserviceName": "cpicommon"
+}

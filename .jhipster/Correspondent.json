@@ -1,0 +1,57 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "contacts",
+            "otherEntityName": "correspondentContact",
+            "otherEntityRelationshipName": "correspondent"
+        },
+        {
+            "relationshipName": "port",
+            "otherEntityName": "port",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "portName"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "correspondentName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "faxNumber",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "address",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "telephoneOffice",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "telephoneAlternate",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "webSite",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180508030946",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "correspondent",
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination",
+    "microserviceName": "cpicommon",
+    "searchEngine": false
+}

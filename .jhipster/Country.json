@@ -1,0 +1,43 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "ports",
+            "otherEntityName": "port",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "country"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "countryName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "countryNameAbbr",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "countryNameChinese",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "dialCode",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180330010550",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "country",
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination",
+    "microserviceName": "cpicommon",
+    "searchEngine": false
+}

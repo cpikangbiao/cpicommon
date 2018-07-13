@@ -1,0 +1,43 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "correspondent",
+            "otherEntityName": "correspondent",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "correspondentContactName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "telephoneOffice",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "telephone",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "eMail",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "webSite",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180508030947",
+    "entityTableName": "correspondent_contact",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": true,
+    "microserviceName": "cpicommon"
+}

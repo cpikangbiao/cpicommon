@@ -1,0 +1,39 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "correspondents",
+            "otherEntityName": "correspondent",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "port"
+        },
+        {
+            "relationshipName": "country",
+            "otherEntityName": "country",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "countryName"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "portCode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "portName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "portNameChinese",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180330011536",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "port",
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination",
+    "microserviceName": "cpicommon",
+    "searchEngine": false
+}
