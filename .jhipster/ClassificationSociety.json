@@ -1,32 +1,31 @@
 {
-    "name": "Country",
+    "name": "ClassificationSociety",
     "fields": [
         {
-            "fieldName": "countryName",
+            "fieldName": "classificationSocietyName",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "countryNameAbbr",
+            "fieldName": "classificationSocietyNameAbbr",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "countryNameChinese",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "dialCode",
-            "fieldType": "String"
+            "fieldName": "sortNum",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "relationships": [],
-    "changelogDate": "20180330010550",
-    "entityTableName": "country",
+    "changelogDate": "20180814084111",
+    "entityTableName": "classification_society",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceImpl",

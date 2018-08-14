@@ -1,32 +1,24 @@
 {
-    "name": "Country",
+    "name": "VesselType",
     "fields": [
         {
-            "fieldName": "countryName",
+            "fieldName": "vesselTypeName",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "countryNameAbbr",
-            "fieldType": "String",
+            "fieldName": "sortNum",
+            "fieldType": "Integer",
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "countryNameChinese",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "dialCode",
-            "fieldType": "String"
         }
     ],
     "relationships": [],
-    "changelogDate": "20180330010550",
-    "entityTableName": "country",
+    "changelogDate": "20180814084110",
+    "entityTableName": "vessel_type",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceImpl",

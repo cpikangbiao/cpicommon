@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity Vessel.
+    -->
+    <changeSet id="20180814084109-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="vessel_country_id"
+                                 baseTableName="vessel"
+                                 constraintName="fk_vessel_vessel_country_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="country"/>
+
+        <addForeignKeyConstraint baseColumnNames="vessel_currency_id"
+                                 baseTableName="vessel"
+                                 constraintName="fk_vessel_vessel_currency_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="currency"/>
+
+        <addForeignKeyConstraint baseColumnNames="vessel_type_id"
+                                 baseTableName="vessel"
+                                 constraintName="fk_vessel_vessel_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="vessel_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="vessel_owner_company_id"
+                                 baseTableName="vessel"
+                                 constraintName="fk_vessel_vessel_owner_company_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="company"/>
+
+        <addForeignKeyConstraint baseColumnNames="registed_port_id"
+                                 baseTableName="vessel"
+                                 constraintName="fk_vessel_registed_port_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="port"/>
+
+    </changeSet>
+</databaseChangeLog>

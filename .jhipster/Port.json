@@ -1,19 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipName": "correspondents",
-            "otherEntityName": "correspondent",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "port"
-        },
-        {
-            "relationshipName": "country",
-            "otherEntityName": "country",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "countryName"
-        }
-    ],
+    "name": "Port",
     "fields": [
         {
             "fieldName": "portCode",
@@ -28,12 +14,24 @@
             "fieldType": "String"
         }
     ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "country",
+            "otherEntityName": "country",
+            "otherEntityField": "countryName",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "port"
+        }
+    ],
     "changelogDate": "20180330011536",
-    "dto": "mapstruct",
-    "service": "serviceImpl",
     "entityTableName": "port",
-    "jpaMetamodelFiltering": true,
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "microserviceName": "cpicommon",
-    "searchEngine": false
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "microserviceName": "cpicommon"
 }
