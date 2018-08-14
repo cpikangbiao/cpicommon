@@ -7,12 +7,14 @@ import com.cpi.common.service.dto.CountryDTO;
 import com.cpi.common.service.mapper.CountryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 /**
  * Service Implementation for managing Country.
  */
@@ -59,6 +61,7 @@ public class CountryServiceImpl implements CountryService {
             .map(countryMapper::toDto);
     }
 
+
     /**
      * Get one country by id.
      *
@@ -67,10 +70,10 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CountryDTO findOne(Long id) {
+    public Optional<CountryDTO> findOne(Long id) {
         log.debug("Request to get Country : {}", id);
-        Country country = countryRepository.findOne(id);
-        return countryMapper.toDto(country);
+        return countryRepository.findById(id)
+            .map(countryMapper::toDto);
     }
 
     /**
@@ -81,6 +84,6 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Country : {}", id);
-        countryRepository.delete(id);
+        countryRepository.deleteById(id);
     }
 }

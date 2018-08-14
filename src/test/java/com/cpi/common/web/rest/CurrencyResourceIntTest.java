@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static com.cpi.common.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -42,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see CurrencyResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {CpicommonApp.class, SecurityBeanOverrideConfiguration.class})
+@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, CpicommonApp.class})
 public class CurrencyResourceIntTest {
 
     private static final String DEFAULT_FULL_NAME_ENGLISH = "AAAAAAAAAA";
@@ -66,8 +67,10 @@ public class CurrencyResourceIntTest {
     @Autowired
     private CurrencyRepository currencyRepository;
 
+
     @Autowired
     private CurrencyMapper currencyMapper;
+    
 
     @Autowired
     private CurrencyService currencyService;
@@ -243,6 +246,7 @@ public class CurrencyResourceIntTest {
             .andExpect(jsonPath("$.[*].nameAbbre").value(hasItem(DEFAULT_NAME_ABBRE.toString())))
             .andExpect(jsonPath("$.[*].currencySort").value(hasItem(DEFAULT_CURRENCY_SORT)));
     }
+    
 
     @Test
     @Transactional
@@ -550,7 +554,6 @@ public class CurrencyResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
-
     @Test
     @Transactional
     public void getNonExistingCurrency() throws Exception {
@@ -564,10 +567,11 @@ public class CurrencyResourceIntTest {
     public void updateCurrency() throws Exception {
         // Initialize the database
         currencyRepository.saveAndFlush(currency);
+
         int databaseSizeBeforeUpdate = currencyRepository.findAll().size();
 
         // Update the currency
-        Currency updatedCurrency = currencyRepository.findOne(currency.getId());
+        Currency updatedCurrency = currencyRepository.findById(currency.getId()).get();
         // Disconnect from session so that the updates on updatedCurrency are not directly saved in db
         em.detach(updatedCurrency);
         updatedCurrency
@@ -604,15 +608,15 @@ public class CurrencyResourceIntTest {
         // Create the Currency
         CurrencyDTO currencyDTO = currencyMapper.toDto(currency);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
         restCurrencyMockMvc.perform(put("/api/currencies")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(currencyDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Currency in the database
         List<Currency> currencyList = currencyRepository.findAll();
-        assertThat(currencyList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(currencyList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -620,6 +624,7 @@ public class CurrencyResourceIntTest {
     public void deleteCurrency() throws Exception {
         // Initialize the database
         currencyRepository.saveAndFlush(currency);
+
         int databaseSizeBeforeDelete = currencyRepository.findAll().size();
 
         // Get the currency

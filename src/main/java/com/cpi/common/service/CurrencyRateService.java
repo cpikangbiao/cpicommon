@@ -1,8 +1,11 @@
 package com.cpi.common.service;
 
 import com.cpi.common.service.dto.CurrencyRateDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * Service Interface for managing CurrencyRate.
@@ -25,13 +28,14 @@ public interface CurrencyRateService {
      */
     Page<CurrencyRateDTO> findAll(Pageable pageable);
 
+
     /**
      * Get the "id" currencyRate.
      *
      * @param id the id of the entity
      * @return the entity
      */
-    CurrencyRateDTO findOne(Long id);
+    Optional<CurrencyRateDTO> findOne(Long id);
 
     /**
      * Delete the "id" currencyRate.

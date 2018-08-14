@@ -79,7 +79,7 @@ public class CorrespondentContactResource {
     public ResponseEntity<CorrespondentContactDTO> updateCorrespondentContact(@Valid @RequestBody CorrespondentContactDTO correspondentContactDTO) throws URISyntaxException {
         log.debug("REST request to update CorrespondentContact : {}", correspondentContactDTO);
         if (correspondentContactDTO.getId() == null) {
-            return createCorrespondentContact(correspondentContactDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         CorrespondentContactDTO result = correspondentContactService.save(correspondentContactDTO);
         return ResponseEntity.ok()
@@ -113,8 +113,8 @@ public class CorrespondentContactResource {
     @Timed
     public ResponseEntity<CorrespondentContactDTO> getCorrespondentContact(@PathVariable Long id) {
         log.debug("REST request to get CorrespondentContact : {}", id);
-        CorrespondentContactDTO correspondentContactDTO = correspondentContactService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(correspondentContactDTO));
+        Optional<CorrespondentContactDTO> correspondentContactDTO = correspondentContactService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(correspondentContactDTO);
     }
 
     /**

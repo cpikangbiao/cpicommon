@@ -1,8 +1,11 @@
 package com.cpi.common.service;
 
 import com.cpi.common.service.dto.CountryDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * Service Interface for managing Country.
@@ -25,13 +28,14 @@ public interface CountryService {
      */
     Page<CountryDTO> findAll(Pageable pageable);
 
+
     /**
      * Get the "id" country.
      *
      * @param id the id of the entity
      * @return the entity
      */
-    CountryDTO findOne(Long id);
+    Optional<CountryDTO> findOne(Long id);
 
     /**
      * Delete the "id" country.

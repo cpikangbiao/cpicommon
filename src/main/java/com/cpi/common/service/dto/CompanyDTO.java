@@ -1,10 +1,7 @@
 package com.cpi.common.service.dto;
 
-
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 import javax.persistence.Lob;
 
@@ -97,7 +94,7 @@ public class CompanyDTO implements Serializable {
         }
 
         CompanyDTO companyDTO = (CompanyDTO) o;
-        if(companyDTO.getId() == null || getId() == null) {
+        if (companyDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), companyDTO.getId());
@@ -116,6 +113,8 @@ public class CompanyDTO implements Serializable {
             ", companyName='" + getCompanyName() + "'" +
             ", countryNameChinese='" + getCountryNameChinese() + "'" +
             ", remark='" + getRemark() + "'" +
+            ", country=" + getCountryId() +
+            ", country='" + getCountryCountryName() + "'" +
             "}";
     }
 }

@@ -79,7 +79,7 @@ public class CurrencyRateResource {
     public ResponseEntity<CurrencyRateDTO> updateCurrencyRate(@Valid @RequestBody CurrencyRateDTO currencyRateDTO) throws URISyntaxException {
         log.debug("REST request to update CurrencyRate : {}", currencyRateDTO);
         if (currencyRateDTO.getId() == null) {
-            return createCurrencyRate(currencyRateDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         CurrencyRateDTO result = currencyRateService.save(currencyRateDTO);
         return ResponseEntity.ok()
@@ -113,8 +113,8 @@ public class CurrencyRateResource {
     @Timed
     public ResponseEntity<CurrencyRateDTO> getCurrencyRate(@PathVariable Long id) {
         log.debug("REST request to get CurrencyRate : {}", id);
-        CurrencyRateDTO currencyRateDTO = currencyRateService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(currencyRateDTO));
+        Optional<CurrencyRateDTO> currencyRateDTO = currencyRateService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(currencyRateDTO);
     }
 
     /**

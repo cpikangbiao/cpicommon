@@ -1,11 +1,8 @@
 package com.cpi.common.service.dto;
 
-
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -75,7 +72,7 @@ public class CurrencyRateDTO implements Serializable {
         }
 
         CurrencyRateDTO currencyRateDTO = (CurrencyRateDTO) o;
-        if(currencyRateDTO.getId() == null || getId() == null) {
+        if (currencyRateDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), currencyRateDTO.getId());
@@ -92,6 +89,8 @@ public class CurrencyRateDTO implements Serializable {
             "id=" + getId() +
             ", rateDate='" + getRateDate() + "'" +
             ", currencyRate=" + getCurrencyRate() +
+            ", currency=" + getCurrencyId() +
+            ", currency='" + getCurrencyNameAbbre() + "'" +
             "}";
     }
 }

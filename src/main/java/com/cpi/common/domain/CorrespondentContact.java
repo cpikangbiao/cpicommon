@@ -1,5 +1,6 @@
 package com.cpi.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -40,6 +41,7 @@ public class CorrespondentContact implements Serializable {
     private String webSite;
 
     @ManyToOne
+    @JsonIgnoreProperties("contacts")
     private Correspondent correspondent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

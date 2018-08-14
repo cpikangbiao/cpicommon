@@ -7,12 +7,14 @@ import com.cpi.common.service.dto.CorrespondentDTO;
 import com.cpi.common.service.mapper.CorrespondentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 /**
  * Service Implementation for managing Correspondent.
  */
@@ -59,6 +61,7 @@ public class CorrespondentServiceImpl implements CorrespondentService {
             .map(correspondentMapper::toDto);
     }
 
+
     /**
      * Get one correspondent by id.
      *
@@ -67,10 +70,10 @@ public class CorrespondentServiceImpl implements CorrespondentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CorrespondentDTO findOne(Long id) {
+    public Optional<CorrespondentDTO> findOne(Long id) {
         log.debug("Request to get Correspondent : {}", id);
-        Correspondent correspondent = correspondentRepository.findOne(id);
-        return correspondentMapper.toDto(correspondent);
+        return correspondentRepository.findById(id)
+            .map(correspondentMapper::toDto);
     }
 
     /**
@@ -81,6 +84,6 @@ public class CorrespondentServiceImpl implements CorrespondentService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Correspondent : {}", id);
-        correspondentRepository.delete(id);
+        correspondentRepository.deleteById(id);
     }
 }

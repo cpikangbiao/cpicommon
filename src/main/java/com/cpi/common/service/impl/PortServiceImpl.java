@@ -7,12 +7,14 @@ import com.cpi.common.service.dto.PortDTO;
 import com.cpi.common.service.mapper.PortMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 /**
  * Service Implementation for managing Port.
  */
@@ -59,6 +61,7 @@ public class PortServiceImpl implements PortService {
             .map(portMapper::toDto);
     }
 
+
     /**
      * Get one port by id.
      *
@@ -67,10 +70,10 @@ public class PortServiceImpl implements PortService {
      */
     @Override
     @Transactional(readOnly = true)
-    public PortDTO findOne(Long id) {
+    public Optional<PortDTO> findOne(Long id) {
         log.debug("Request to get Port : {}", id);
-        Port port = portRepository.findOne(id);
-        return portMapper.toDto(port);
+        return portRepository.findById(id)
+            .map(portMapper::toDto);
     }
 
     /**
@@ -81,6 +84,6 @@ public class PortServiceImpl implements PortService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Port : {}", id);
-        portRepository.delete(id);
+        portRepository.deleteById(id);
     }
 }

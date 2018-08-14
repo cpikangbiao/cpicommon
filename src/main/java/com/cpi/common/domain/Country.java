@@ -41,7 +41,6 @@ public class Country implements Serializable {
     private String dialCode;
 
     @OneToMany(mappedBy = "country")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Port> ports = new HashSet<>();
 

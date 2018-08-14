@@ -1,13 +1,12 @@
 package com.cpi.common.service;
 
-
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specifications;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ import com.cpi.common.service.mapper.PortMapper;
 
 /**
  * Service for executing complex queries for Port entities in the database.
- * The main input is a {@link PortCriteria} which get's converted to {@link Specifications},
+ * The main input is a {@link PortCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
  * It returns a {@link List} of {@link PortDTO} or a {@link Page} of {@link PortDTO} which fulfills the criteria.
  */
@@ -32,7 +31,6 @@ import com.cpi.common.service.mapper.PortMapper;
 public class PortQueryService extends QueryService<Port> {
 
     private final Logger log = LoggerFactory.getLogger(PortQueryService.class);
-
 
     private final PortRepository portRepository;
 
@@ -51,7 +49,7 @@ public class PortQueryService extends QueryService<Port> {
     @Transactional(readOnly = true)
     public List<PortDTO> findByCriteria(PortCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
-        final Specifications<Port> specification = createSpecification(criteria);
+        final Specification<Port> specification = createSpecification(criteria);
         return portMapper.toDto(portRepository.findAll(specification));
     }
 
@@ -64,16 +62,16 @@ public class PortQueryService extends QueryService<Port> {
     @Transactional(readOnly = true)
     public Page<PortDTO> findByCriteria(PortCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
-        final Specifications<Port> specification = createSpecification(criteria);
-        final Page<Port> result = portRepository.findAll(specification, page);
-        return result.map(portMapper::toDto);
+        final Specification<Port> specification = createSpecification(criteria);
+        return portRepository.findAll(specification, page)
+            .map(portMapper::toDto);
     }
 
     /**
-     * Function to convert PortCriteria to a {@link Specifications}
+     * Function to convert PortCriteria to a {@link Specification}
      */
-    private Specifications<Port> createSpecification(PortCriteria criteria) {
-        Specifications<Port> specification = Specifications.where(null);
+    private Specification<Port> createSpecification(PortCriteria criteria) {
+        Specification<Port> specification = Specification.where(null);
         if (criteria != null) {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Port_.id));

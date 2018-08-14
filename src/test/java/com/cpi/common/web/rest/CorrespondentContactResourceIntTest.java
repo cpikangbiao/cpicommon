@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static com.cpi.common.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -43,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see CorrespondentContactResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {CpicommonApp.class, SecurityBeanOverrideConfiguration.class})
+@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, CpicommonApp.class})
 public class CorrespondentContactResourceIntTest {
 
     private static final String DEFAULT_CORRESPONDENT_CONTACT_NAME = "AAAAAAAAAA";
@@ -64,8 +65,10 @@ public class CorrespondentContactResourceIntTest {
     @Autowired
     private CorrespondentContactRepository correspondentContactRepository;
 
+
     @Autowired
     private CorrespondentContactMapper correspondentContactMapper;
+    
 
     @Autowired
     private CorrespondentContactService correspondentContactService;
@@ -200,6 +203,7 @@ public class CorrespondentContactResourceIntTest {
             .andExpect(jsonPath("$.[*].eMail").value(hasItem(DEFAULT_E_MAIL.toString())))
             .andExpect(jsonPath("$.[*].webSite").value(hasItem(DEFAULT_WEB_SITE.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -458,7 +462,6 @@ public class CorrespondentContactResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
-
     @Test
     @Transactional
     public void getNonExistingCorrespondentContact() throws Exception {
@@ -472,10 +475,11 @@ public class CorrespondentContactResourceIntTest {
     public void updateCorrespondentContact() throws Exception {
         // Initialize the database
         correspondentContactRepository.saveAndFlush(correspondentContact);
+
         int databaseSizeBeforeUpdate = correspondentContactRepository.findAll().size();
 
         // Update the correspondentContact
-        CorrespondentContact updatedCorrespondentContact = correspondentContactRepository.findOne(correspondentContact.getId());
+        CorrespondentContact updatedCorrespondentContact = correspondentContactRepository.findById(correspondentContact.getId()).get();
         // Disconnect from session so that the updates on updatedCorrespondentContact are not directly saved in db
         em.detach(updatedCorrespondentContact);
         updatedCorrespondentContact
@@ -510,15 +514,15 @@ public class CorrespondentContactResourceIntTest {
         // Create the CorrespondentContact
         CorrespondentContactDTO correspondentContactDTO = correspondentContactMapper.toDto(correspondentContact);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
         restCorrespondentContactMockMvc.perform(put("/api/correspondent-contacts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(correspondentContactDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the CorrespondentContact in the database
         List<CorrespondentContact> correspondentContactList = correspondentContactRepository.findAll();
-        assertThat(correspondentContactList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(correspondentContactList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -526,6 +530,7 @@ public class CorrespondentContactResourceIntTest {
     public void deleteCorrespondentContact() throws Exception {
         // Initialize the database
         correspondentContactRepository.saveAndFlush(correspondentContact);
+
         int databaseSizeBeforeDelete = correspondentContactRepository.findAll().size();
 
         // Get the correspondentContact

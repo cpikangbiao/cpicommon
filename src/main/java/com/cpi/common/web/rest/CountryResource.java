@@ -79,7 +79,7 @@ public class CountryResource {
     public ResponseEntity<CountryDTO> updateCountry(@Valid @RequestBody CountryDTO countryDTO) throws URISyntaxException {
         log.debug("REST request to update Country : {}", countryDTO);
         if (countryDTO.getId() == null) {
-            return createCountry(countryDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         CountryDTO result = countryService.save(countryDTO);
         return ResponseEntity.ok()
@@ -113,8 +113,8 @@ public class CountryResource {
     @Timed
     public ResponseEntity<CountryDTO> getCountry(@PathVariable Long id) {
         log.debug("REST request to get Country : {}", id);
-        CountryDTO countryDTO = countryService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(countryDTO));
+        Optional<CountryDTO> countryDTO = countryService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(countryDTO);
     }
 
     /**

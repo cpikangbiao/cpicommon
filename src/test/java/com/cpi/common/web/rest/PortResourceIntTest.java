@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static com.cpi.common.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -44,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see PortResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {CpicommonApp.class, SecurityBeanOverrideConfiguration.class})
+@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, CpicommonApp.class})
 public class PortResourceIntTest {
 
     private static final String DEFAULT_PORT_CODE = "AAAAAAAAAA";
@@ -59,8 +60,10 @@ public class PortResourceIntTest {
     @Autowired
     private PortRepository portRepository;
 
+
     @Autowired
     private PortMapper portMapper;
+    
 
     @Autowired
     private PortService portService;
@@ -170,6 +173,7 @@ public class PortResourceIntTest {
             .andExpect(jsonPath("$.[*].portName").value(hasItem(DEFAULT_PORT_NAME.toString())))
             .andExpect(jsonPath("$.[*].portNameChinese").value(hasItem(DEFAULT_PORT_NAME_CHINESE.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -365,7 +369,6 @@ public class PortResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
-
     @Test
     @Transactional
     public void getNonExistingPort() throws Exception {
@@ -379,10 +382,11 @@ public class PortResourceIntTest {
     public void updatePort() throws Exception {
         // Initialize the database
         portRepository.saveAndFlush(port);
+
         int databaseSizeBeforeUpdate = portRepository.findAll().size();
 
         // Update the port
-        Port updatedPort = portRepository.findOne(port.getId());
+        Port updatedPort = portRepository.findById(port.getId()).get();
         // Disconnect from session so that the updates on updatedPort are not directly saved in db
         em.detach(updatedPort);
         updatedPort
@@ -413,15 +417,15 @@ public class PortResourceIntTest {
         // Create the Port
         PortDTO portDTO = portMapper.toDto(port);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
         restPortMockMvc.perform(put("/api/ports")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(portDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Port in the database
         List<Port> portList = portRepository.findAll();
-        assertThat(portList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(portList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -429,6 +433,7 @@ public class PortResourceIntTest {
     public void deletePort() throws Exception {
         // Initialize the database
         portRepository.saveAndFlush(port);
+
         int databaseSizeBeforeDelete = portRepository.findAll().size();
 
         // Get the port

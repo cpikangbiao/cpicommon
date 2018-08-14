@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
+
 import static com.cpi.common.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -45,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see CurrencyRateResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {CpicommonApp.class, SecurityBeanOverrideConfiguration.class})
+@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, CpicommonApp.class})
 public class CurrencyRateResourceIntTest {
 
     private static final LocalDate DEFAULT_RATE_DATE = LocalDate.ofEpochDay(0L);
@@ -57,8 +58,10 @@ public class CurrencyRateResourceIntTest {
     @Autowired
     private CurrencyRateRepository currencyRateRepository;
 
+
     @Autowired
     private CurrencyRateMapper currencyRateMapper;
+    
 
     @Autowired
     private CurrencyRateService currencyRateService;
@@ -203,6 +206,7 @@ public class CurrencyRateResourceIntTest {
             .andExpect(jsonPath("$.[*].rateDate").value(hasItem(DEFAULT_RATE_DATE.toString())))
             .andExpect(jsonPath("$.[*].currencyRate").value(hasItem(DEFAULT_CURRENCY_RATE.doubleValue())));
     }
+    
 
     @Test
     @Transactional
@@ -365,7 +369,6 @@ public class CurrencyRateResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
-
     @Test
     @Transactional
     public void getNonExistingCurrencyRate() throws Exception {
@@ -379,10 +382,11 @@ public class CurrencyRateResourceIntTest {
     public void updateCurrencyRate() throws Exception {
         // Initialize the database
         currencyRateRepository.saveAndFlush(currencyRate);
+
         int databaseSizeBeforeUpdate = currencyRateRepository.findAll().size();
 
         // Update the currencyRate
-        CurrencyRate updatedCurrencyRate = currencyRateRepository.findOne(currencyRate.getId());
+        CurrencyRate updatedCurrencyRate = currencyRateRepository.findById(currencyRate.getId()).get();
         // Disconnect from session so that the updates on updatedCurrencyRate are not directly saved in db
         em.detach(updatedCurrencyRate);
         updatedCurrencyRate
@@ -411,15 +415,15 @@ public class CurrencyRateResourceIntTest {
         // Create the CurrencyRate
         CurrencyRateDTO currencyRateDTO = currencyRateMapper.toDto(currencyRate);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
         restCurrencyRateMockMvc.perform(put("/api/currency-rates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(currencyRateDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the CurrencyRate in the database
         List<CurrencyRate> currencyRateList = currencyRateRepository.findAll();
-        assertThat(currencyRateList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(currencyRateList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -427,6 +431,7 @@ public class CurrencyRateResourceIntTest {
     public void deleteCurrencyRate() throws Exception {
         // Initialize the database
         currencyRateRepository.saveAndFlush(currencyRate);
+
         int databaseSizeBeforeDelete = currencyRateRepository.findAll().size();
 
         // Get the currencyRate

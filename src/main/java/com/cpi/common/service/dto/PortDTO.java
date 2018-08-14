@@ -1,9 +1,6 @@
 package com.cpi.common.service.dto;
 
-
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -81,7 +78,7 @@ public class PortDTO implements Serializable {
         }
 
         PortDTO portDTO = (PortDTO) o;
-        if(portDTO.getId() == null || getId() == null) {
+        if (portDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), portDTO.getId());
@@ -99,6 +96,8 @@ public class PortDTO implements Serializable {
             ", portCode='" + getPortCode() + "'" +
             ", portName='" + getPortName() + "'" +
             ", portNameChinese='" + getPortNameChinese() + "'" +
+            ", country=" + getCountryId() +
+            ", country='" + getCountryCountryName() + "'" +
             "}";
     }
 }

@@ -1,13 +1,12 @@
 package com.cpi.common.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specifications;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ import com.cpi.common.service.mapper.CurrencyRateMapper;
 
 /**
  * Service for executing complex queries for CurrencyRate entities in the database.
- * The main input is a {@link CurrencyRateCriteria} which get's converted to {@link Specifications},
+ * The main input is a {@link CurrencyRateCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
  * It returns a {@link List} of {@link CurrencyRateDTO} or a {@link Page} of {@link CurrencyRateDTO} which fulfills the criteria.
  */
@@ -32,7 +31,6 @@ import com.cpi.common.service.mapper.CurrencyRateMapper;
 public class CurrencyRateQueryService extends QueryService<CurrencyRate> {
 
     private final Logger log = LoggerFactory.getLogger(CurrencyRateQueryService.class);
-
 
     private final CurrencyRateRepository currencyRateRepository;
 
@@ -51,7 +49,7 @@ public class CurrencyRateQueryService extends QueryService<CurrencyRate> {
     @Transactional(readOnly = true)
     public List<CurrencyRateDTO> findByCriteria(CurrencyRateCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
-        final Specifications<CurrencyRate> specification = createSpecification(criteria);
+        final Specification<CurrencyRate> specification = createSpecification(criteria);
         return currencyRateMapper.toDto(currencyRateRepository.findAll(specification));
     }
 
@@ -64,16 +62,16 @@ public class CurrencyRateQueryService extends QueryService<CurrencyRate> {
     @Transactional(readOnly = true)
     public Page<CurrencyRateDTO> findByCriteria(CurrencyRateCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
-        final Specifications<CurrencyRate> specification = createSpecification(criteria);
-        final Page<CurrencyRate> result = currencyRateRepository.findAll(specification, page);
-        return result.map(currencyRateMapper::toDto);
+        final Specification<CurrencyRate> specification = createSpecification(criteria);
+        return currencyRateRepository.findAll(specification, page)
+            .map(currencyRateMapper::toDto);
     }
 
     /**
-     * Function to convert CurrencyRateCriteria to a {@link Specifications}
+     * Function to convert CurrencyRateCriteria to a {@link Specification}
      */
-    private Specifications<CurrencyRate> createSpecification(CurrencyRateCriteria criteria) {
-        Specifications<CurrencyRate> specification = Specifications.where(null);
+    private Specification<CurrencyRate> createSpecification(CurrencyRateCriteria criteria) {
+        Specification<CurrencyRate> specification = Specification.where(null);
         if (criteria != null) {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), CurrencyRate_.id));

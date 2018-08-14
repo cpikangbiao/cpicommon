@@ -1,13 +1,12 @@
 package com.cpi.common.repository;
 
 import com.cpi.common.domain.Currency;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the Currency entity.
+ * Spring Data  repository for the Currency entity.
  */
 @SuppressWarnings("unused")
 @Repository

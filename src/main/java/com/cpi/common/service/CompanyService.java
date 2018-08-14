@@ -1,8 +1,11 @@
 package com.cpi.common.service;
 
 import com.cpi.common.service.dto.CompanyDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * Service Interface for managing Company.
@@ -25,13 +28,14 @@ public interface CompanyService {
      */
     Page<CompanyDTO> findAll(Pageable pageable);
 
+
     /**
      * Get the "id" company.
      *
      * @param id the id of the entity
      * @return the entity
      */
-    CompanyDTO findOne(Long id);
+    Optional<CompanyDTO> findOne(Long id);
 
     /**
      * Delete the "id" company.

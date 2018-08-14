@@ -1,13 +1,12 @@
 package com.cpi.common.service;
 
-
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specifications;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ import com.cpi.common.service.mapper.CountryMapper;
 
 /**
  * Service for executing complex queries for Country entities in the database.
- * The main input is a {@link CountryCriteria} which get's converted to {@link Specifications},
+ * The main input is a {@link CountryCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
  * It returns a {@link List} of {@link CountryDTO} or a {@link Page} of {@link CountryDTO} which fulfills the criteria.
  */
@@ -32,7 +31,6 @@ import com.cpi.common.service.mapper.CountryMapper;
 public class CountryQueryService extends QueryService<Country> {
 
     private final Logger log = LoggerFactory.getLogger(CountryQueryService.class);
-
 
     private final CountryRepository countryRepository;
 
@@ -51,7 +49,7 @@ public class CountryQueryService extends QueryService<Country> {
     @Transactional(readOnly = true)
     public List<CountryDTO> findByCriteria(CountryCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
-        final Specifications<Country> specification = createSpecification(criteria);
+        final Specification<Country> specification = createSpecification(criteria);
         return countryMapper.toDto(countryRepository.findAll(specification));
     }
 
@@ -64,16 +62,16 @@ public class CountryQueryService extends QueryService<Country> {
     @Transactional(readOnly = true)
     public Page<CountryDTO> findByCriteria(CountryCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
-        final Specifications<Country> specification = createSpecification(criteria);
-        final Page<Country> result = countryRepository.findAll(specification, page);
-        return result.map(countryMapper::toDto);
+        final Specification<Country> specification = createSpecification(criteria);
+        return countryRepository.findAll(specification, page)
+            .map(countryMapper::toDto);
     }
 
     /**
-     * Function to convert CountryCriteria to a {@link Specifications}
+     * Function to convert CountryCriteria to a {@link Specification}
      */
-    private Specifications<Country> createSpecification(CountryCriteria criteria) {
-        Specifications<Country> specification = Specifications.where(null);
+    private Specification<Country> createSpecification(CountryCriteria criteria) {
+        Specification<Country> specification = Specification.where(null);
         if (criteria != null) {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Country_.id));

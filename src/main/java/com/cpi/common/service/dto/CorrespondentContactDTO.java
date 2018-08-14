@@ -1,10 +1,7 @@
 package com.cpi.common.service.dto;
 
-
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -93,7 +90,7 @@ public class CorrespondentContactDTO implements Serializable {
         }
 
         CorrespondentContactDTO correspondentContactDTO = (CorrespondentContactDTO) o;
-        if(correspondentContactDTO.getId() == null || getId() == null) {
+        if (correspondentContactDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), correspondentContactDTO.getId());
@@ -113,6 +110,7 @@ public class CorrespondentContactDTO implements Serializable {
             ", telephone='" + getTelephone() + "'" +
             ", eMail='" + geteMail() + "'" +
             ", webSite='" + getWebSite() + "'" +
+            ", correspondent=" + getCorrespondentId() +
             "}";
     }
 }

@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static com.cpi.common.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -44,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see CorrespondentResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {CpicommonApp.class, SecurityBeanOverrideConfiguration.class})
+@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, CpicommonApp.class})
 public class CorrespondentResourceIntTest {
 
     private static final String DEFAULT_CORRESPONDENT_NAME = "AAAAAAAAAA";
@@ -68,8 +69,10 @@ public class CorrespondentResourceIntTest {
     @Autowired
     private CorrespondentRepository correspondentRepository;
 
+
     @Autowired
     private CorrespondentMapper correspondentMapper;
+    
 
     @Autowired
     private CorrespondentService correspondentService;
@@ -212,6 +215,7 @@ public class CorrespondentResourceIntTest {
             .andExpect(jsonPath("$.[*].telephoneAlternate").value(hasItem(DEFAULT_TELEPHONE_ALTERNATE.toString())))
             .andExpect(jsonPath("$.[*].webSite").value(hasItem(DEFAULT_WEB_SITE.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -530,7 +534,6 @@ public class CorrespondentResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
-
     @Test
     @Transactional
     public void getNonExistingCorrespondent() throws Exception {
@@ -544,10 +547,11 @@ public class CorrespondentResourceIntTest {
     public void updateCorrespondent() throws Exception {
         // Initialize the database
         correspondentRepository.saveAndFlush(correspondent);
+
         int databaseSizeBeforeUpdate = correspondentRepository.findAll().size();
 
         // Update the correspondent
-        Correspondent updatedCorrespondent = correspondentRepository.findOne(correspondent.getId());
+        Correspondent updatedCorrespondent = correspondentRepository.findById(correspondent.getId()).get();
         // Disconnect from session so that the updates on updatedCorrespondent are not directly saved in db
         em.detach(updatedCorrespondent);
         updatedCorrespondent
@@ -584,15 +588,15 @@ public class CorrespondentResourceIntTest {
         // Create the Correspondent
         CorrespondentDTO correspondentDTO = correspondentMapper.toDto(correspondent);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
         restCorrespondentMockMvc.perform(put("/api/correspondents")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(correspondentDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Correspondent in the database
         List<Correspondent> correspondentList = correspondentRepository.findAll();
-        assertThat(correspondentList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(correspondentList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -600,6 +604,7 @@ public class CorrespondentResourceIntTest {
     public void deleteCorrespondent() throws Exception {
         // Initialize the database
         correspondentRepository.saveAndFlush(correspondent);
+
         int databaseSizeBeforeDelete = correspondentRepository.findAll().size();
 
         // Get the correspondent

@@ -7,12 +7,14 @@ import com.cpi.common.service.dto.CurrencyRateDTO;
 import com.cpi.common.service.mapper.CurrencyRateMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 /**
  * Service Implementation for managing CurrencyRate.
  */
@@ -59,6 +61,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
             .map(currencyRateMapper::toDto);
     }
 
+
     /**
      * Get one currencyRate by id.
      *
@@ -67,10 +70,10 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CurrencyRateDTO findOne(Long id) {
+    public Optional<CurrencyRateDTO> findOne(Long id) {
         log.debug("Request to get CurrencyRate : {}", id);
-        CurrencyRate currencyRate = currencyRateRepository.findOne(id);
-        return currencyRateMapper.toDto(currencyRate);
+        return currencyRateRepository.findById(id)
+            .map(currencyRateMapper::toDto);
     }
 
     /**
@@ -81,6 +84,6 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete CurrencyRate : {}", id);
-        currencyRateRepository.delete(id);
+        currencyRateRepository.deleteById(id);
     }
 }

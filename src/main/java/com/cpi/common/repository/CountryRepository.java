@@ -1,13 +1,12 @@
 package com.cpi.common.repository;
 
 import com.cpi.common.domain.Country;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the Country entity.
+ * Spring Data  repository for the Country entity.
  */
 @SuppressWarnings("unused")
 @Repository

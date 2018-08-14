@@ -1,6 +1,5 @@
 package com.cpi.common.service.dto;
 
-
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -98,7 +97,7 @@ public class CurrencyDTO implements Serializable {
         }
 
         CurrencyDTO currencyDTO = (CurrencyDTO) o;
-        if(currencyDTO.getId() == null || getId() == null) {
+        if (currencyDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), currencyDTO.getId());

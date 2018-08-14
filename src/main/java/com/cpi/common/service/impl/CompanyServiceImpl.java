@@ -7,12 +7,14 @@ import com.cpi.common.service.dto.CompanyDTO;
 import com.cpi.common.service.mapper.CompanyMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 /**
  * Service Implementation for managing Company.
  */
@@ -59,6 +61,7 @@ public class CompanyServiceImpl implements CompanyService {
             .map(companyMapper::toDto);
     }
 
+
     /**
      * Get one company by id.
      *
@@ -67,10 +70,10 @@ public class CompanyServiceImpl implements CompanyService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CompanyDTO findOne(Long id) {
+    public Optional<CompanyDTO> findOne(Long id) {
         log.debug("Request to get Company : {}", id);
-        Company company = companyRepository.findOne(id);
-        return companyMapper.toDto(company);
+        return companyRepository.findById(id)
+            .map(companyMapper::toDto);
     }
 
     /**
@@ -81,6 +84,6 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Company : {}", id);
-        companyRepository.delete(id);
+        companyRepository.deleteById(id);
     }
 }

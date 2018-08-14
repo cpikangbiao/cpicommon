@@ -1,8 +1,11 @@
 package com.cpi.common.service;
 
 import com.cpi.common.service.dto.CorrespondentContactDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * Service Interface for managing CorrespondentContact.
@@ -25,13 +28,14 @@ public interface CorrespondentContactService {
      */
     Page<CorrespondentContactDTO> findAll(Pageable pageable);
 
+
     /**
      * Get the "id" correspondentContact.
      *
      * @param id the id of the entity
      * @return the entity
      */
-    CorrespondentContactDTO findOne(Long id);
+    Optional<CorrespondentContactDTO> findOne(Long id);
 
     /**
      * Delete the "id" correspondentContact.

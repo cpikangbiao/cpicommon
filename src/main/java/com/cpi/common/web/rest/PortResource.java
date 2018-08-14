@@ -78,7 +78,7 @@ public class PortResource {
     public ResponseEntity<PortDTO> updatePort(@RequestBody PortDTO portDTO) throws URISyntaxException {
         log.debug("REST request to update Port : {}", portDTO);
         if (portDTO.getId() == null) {
-            return createPort(portDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         PortDTO result = portService.save(portDTO);
         return ResponseEntity.ok()
@@ -112,8 +112,8 @@ public class PortResource {
     @Timed
     public ResponseEntity<PortDTO> getPort(@PathVariable Long id) {
         log.debug("REST request to get Port : {}", id);
-        PortDTO portDTO = portService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(portDTO));
+        Optional<PortDTO> portDTO = portService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(portDTO);
     }
 
     /**
