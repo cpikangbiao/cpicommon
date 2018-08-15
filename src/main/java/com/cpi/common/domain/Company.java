@@ -15,7 +15,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "company")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Company extends AbstractAuditingEntity implements Serializable {
+public class Company implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,8 +32,8 @@ public class Company extends AbstractAuditingEntity implements Serializable {
     @Column(name = "company_name", nullable = false)
     private String companyName;
 
-    @Column(name = "country_name_chinese")
-    private String countryNameChinese;
+    @Column(name = "company_name_chinese")
+    private String companyNameChinese;
 
     @Lob
     @Column(name = "remark")
@@ -78,17 +78,17 @@ public class Company extends AbstractAuditingEntity implements Serializable {
         this.companyName = companyName;
     }
 
-    public String getCountryNameChinese() {
-        return countryNameChinese;
+    public String getCompanyNameChinese() {
+        return companyNameChinese;
     }
 
-    public Company countryNameChinese(String countryNameChinese) {
-        this.countryNameChinese = countryNameChinese;
+    public Company companyNameChinese(String companyNameChinese) {
+        this.companyNameChinese = companyNameChinese;
         return this;
     }
 
-    public void setCountryNameChinese(String countryNameChinese) {
-        this.countryNameChinese = countryNameChinese;
+    public void setCompanyNameChinese(String companyNameChinese) {
+        this.companyNameChinese = companyNameChinese;
     }
 
     public String getRemark() {
@@ -144,7 +144,7 @@ public class Company extends AbstractAuditingEntity implements Serializable {
             "id=" + getId() +
             ", companyCode='" + getCompanyCode() + "'" +
             ", companyName='" + getCompanyName() + "'" +
-            ", countryNameChinese='" + getCountryNameChinese() + "'" +
+            ", companyNameChinese='" + getCompanyNameChinese() + "'" +
             ", remark='" + getRemark() + "'" +
             "}";
     }

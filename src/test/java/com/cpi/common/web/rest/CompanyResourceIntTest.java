@@ -54,8 +54,8 @@ public class CompanyResourceIntTest {
     private static final String DEFAULT_COMPANY_NAME = "AAAAAAAAAA";
     private static final String UPDATED_COMPANY_NAME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_COUNTRY_NAME_CHINESE = "AAAAAAAAAA";
-    private static final String UPDATED_COUNTRY_NAME_CHINESE = "BBBBBBBBBB";
+    private static final String DEFAULT_COMPANY_NAME_CHINESE = "AAAAAAAAAA";
+    private static final String UPDATED_COMPANY_NAME_CHINESE = "BBBBBBBBBB";
 
     private static final String DEFAULT_REMARK = "AAAAAAAAAA";
     private static final String UPDATED_REMARK = "BBBBBBBBBB";
@@ -111,7 +111,7 @@ public class CompanyResourceIntTest {
         Company company = new Company()
             .companyCode(DEFAULT_COMPANY_CODE)
             .companyName(DEFAULT_COMPANY_NAME)
-            .countryNameChinese(DEFAULT_COUNTRY_NAME_CHINESE)
+            .companyNameChinese(DEFAULT_COMPANY_NAME_CHINESE)
             .remark(DEFAULT_REMARK);
         return company;
     }
@@ -139,7 +139,7 @@ public class CompanyResourceIntTest {
         Company testCompany = companyList.get(companyList.size() - 1);
         assertThat(testCompany.getCompanyCode()).isEqualTo(DEFAULT_COMPANY_CODE);
         assertThat(testCompany.getCompanyName()).isEqualTo(DEFAULT_COMPANY_NAME);
-        assertThat(testCompany.getCountryNameChinese()).isEqualTo(DEFAULT_COUNTRY_NAME_CHINESE);
+        assertThat(testCompany.getCompanyNameChinese()).isEqualTo(DEFAULT_COMPANY_NAME_CHINESE);
         assertThat(testCompany.getRemark()).isEqualTo(DEFAULT_REMARK);
     }
 
@@ -214,7 +214,7 @@ public class CompanyResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(company.getId().intValue())))
             .andExpect(jsonPath("$.[*].companyCode").value(hasItem(DEFAULT_COMPANY_CODE.toString())))
             .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME.toString())))
-            .andExpect(jsonPath("$.[*].countryNameChinese").value(hasItem(DEFAULT_COUNTRY_NAME_CHINESE.toString())))
+            .andExpect(jsonPath("$.[*].companyNameChinese").value(hasItem(DEFAULT_COMPANY_NAME_CHINESE.toString())))
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())));
     }
     
@@ -232,7 +232,7 @@ public class CompanyResourceIntTest {
             .andExpect(jsonPath("$.id").value(company.getId().intValue()))
             .andExpect(jsonPath("$.companyCode").value(DEFAULT_COMPANY_CODE.toString()))
             .andExpect(jsonPath("$.companyName").value(DEFAULT_COMPANY_NAME.toString()))
-            .andExpect(jsonPath("$.countryNameChinese").value(DEFAULT_COUNTRY_NAME_CHINESE.toString()))
+            .andExpect(jsonPath("$.companyNameChinese").value(DEFAULT_COMPANY_NAME_CHINESE.toString()))
             .andExpect(jsonPath("$.remark").value(DEFAULT_REMARK.toString()));
     }
 
@@ -316,41 +316,41 @@ public class CompanyResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllCompaniesByCountryNameChineseIsEqualToSomething() throws Exception {
+    public void getAllCompaniesByCompanyNameChineseIsEqualToSomething() throws Exception {
         // Initialize the database
         companyRepository.saveAndFlush(company);
 
-        // Get all the companyList where countryNameChinese equals to DEFAULT_COUNTRY_NAME_CHINESE
-        defaultCompanyShouldBeFound("countryNameChinese.equals=" + DEFAULT_COUNTRY_NAME_CHINESE);
+        // Get all the companyList where companyNameChinese equals to DEFAULT_COMPANY_NAME_CHINESE
+        defaultCompanyShouldBeFound("companyNameChinese.equals=" + DEFAULT_COMPANY_NAME_CHINESE);
 
-        // Get all the companyList where countryNameChinese equals to UPDATED_COUNTRY_NAME_CHINESE
-        defaultCompanyShouldNotBeFound("countryNameChinese.equals=" + UPDATED_COUNTRY_NAME_CHINESE);
+        // Get all the companyList where companyNameChinese equals to UPDATED_COMPANY_NAME_CHINESE
+        defaultCompanyShouldNotBeFound("companyNameChinese.equals=" + UPDATED_COMPANY_NAME_CHINESE);
     }
 
     @Test
     @Transactional
-    public void getAllCompaniesByCountryNameChineseIsInShouldWork() throws Exception {
+    public void getAllCompaniesByCompanyNameChineseIsInShouldWork() throws Exception {
         // Initialize the database
         companyRepository.saveAndFlush(company);
 
-        // Get all the companyList where countryNameChinese in DEFAULT_COUNTRY_NAME_CHINESE or UPDATED_COUNTRY_NAME_CHINESE
-        defaultCompanyShouldBeFound("countryNameChinese.in=" + DEFAULT_COUNTRY_NAME_CHINESE + "," + UPDATED_COUNTRY_NAME_CHINESE);
+        // Get all the companyList where companyNameChinese in DEFAULT_COMPANY_NAME_CHINESE or UPDATED_COMPANY_NAME_CHINESE
+        defaultCompanyShouldBeFound("companyNameChinese.in=" + DEFAULT_COMPANY_NAME_CHINESE + "," + UPDATED_COMPANY_NAME_CHINESE);
 
-        // Get all the companyList where countryNameChinese equals to UPDATED_COUNTRY_NAME_CHINESE
-        defaultCompanyShouldNotBeFound("countryNameChinese.in=" + UPDATED_COUNTRY_NAME_CHINESE);
+        // Get all the companyList where companyNameChinese equals to UPDATED_COMPANY_NAME_CHINESE
+        defaultCompanyShouldNotBeFound("companyNameChinese.in=" + UPDATED_COMPANY_NAME_CHINESE);
     }
 
     @Test
     @Transactional
-    public void getAllCompaniesByCountryNameChineseIsNullOrNotNull() throws Exception {
+    public void getAllCompaniesByCompanyNameChineseIsNullOrNotNull() throws Exception {
         // Initialize the database
         companyRepository.saveAndFlush(company);
 
-        // Get all the companyList where countryNameChinese is not null
-        defaultCompanyShouldBeFound("countryNameChinese.specified=true");
+        // Get all the companyList where companyNameChinese is not null
+        defaultCompanyShouldBeFound("companyNameChinese.specified=true");
 
-        // Get all the companyList where countryNameChinese is null
-        defaultCompanyShouldNotBeFound("countryNameChinese.specified=false");
+        // Get all the companyList where companyNameChinese is null
+        defaultCompanyShouldNotBeFound("companyNameChinese.specified=false");
     }
 
     @Test
@@ -381,7 +381,7 @@ public class CompanyResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(company.getId().intValue())))
             .andExpect(jsonPath("$.[*].companyCode").value(hasItem(DEFAULT_COMPANY_CODE.toString())))
             .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME.toString())))
-            .andExpect(jsonPath("$.[*].countryNameChinese").value(hasItem(DEFAULT_COUNTRY_NAME_CHINESE.toString())))
+            .andExpect(jsonPath("$.[*].companyNameChinese").value(hasItem(DEFAULT_COMPANY_NAME_CHINESE.toString())))
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())));
     }
 
@@ -419,7 +419,7 @@ public class CompanyResourceIntTest {
         updatedCompany
             .companyCode(UPDATED_COMPANY_CODE)
             .companyName(UPDATED_COMPANY_NAME)
-            .countryNameChinese(UPDATED_COUNTRY_NAME_CHINESE)
+            .companyNameChinese(UPDATED_COMPANY_NAME_CHINESE)
             .remark(UPDATED_REMARK);
         CompanyDTO companyDTO = companyMapper.toDto(updatedCompany);
 
@@ -434,7 +434,7 @@ public class CompanyResourceIntTest {
         Company testCompany = companyList.get(companyList.size() - 1);
         assertThat(testCompany.getCompanyCode()).isEqualTo(UPDATED_COMPANY_CODE);
         assertThat(testCompany.getCompanyName()).isEqualTo(UPDATED_COMPANY_NAME);
-        assertThat(testCompany.getCountryNameChinese()).isEqualTo(UPDATED_COUNTRY_NAME_CHINESE);
+        assertThat(testCompany.getCompanyNameChinese()).isEqualTo(UPDATED_COMPANY_NAME_CHINESE);
         assertThat(testCompany.getRemark()).isEqualTo(UPDATED_REMARK);
     }
 

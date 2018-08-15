@@ -32,7 +32,7 @@ public class CompanyCriteria implements Serializable {
 
     private StringFilter companyName;
 
-    private StringFilter countryNameChinese;
+    private StringFilter companyNameChinese;
 
     private LongFilter countryId;
 
@@ -63,12 +63,12 @@ public class CompanyCriteria implements Serializable {
         this.companyName = companyName;
     }
 
-    public StringFilter getCountryNameChinese() {
-        return countryNameChinese;
+    public StringFilter getCompanyNameChinese() {
+        return companyNameChinese;
     }
 
-    public void setCountryNameChinese(StringFilter countryNameChinese) {
-        this.countryNameChinese = countryNameChinese;
+    public void setCompanyNameChinese(StringFilter companyNameChinese) {
+        this.companyNameChinese = companyNameChinese;
     }
 
     public LongFilter getCountryId() {
@@ -85,7 +85,7 @@ public class CompanyCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (companyCode != null ? "companyCode=" + companyCode + ", " : "") +
                 (companyName != null ? "companyName=" + companyName + ", " : "") +
-                (countryNameChinese != null ? "countryNameChinese=" + countryNameChinese + ", " : "") +
+                (companyNameChinese != null ? "companyNameChinese=" + companyNameChinese + ", " : "") +
                 (countryId != null ? "countryId=" + countryId + ", " : "") +
             "}";
     }

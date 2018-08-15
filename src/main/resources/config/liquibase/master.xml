@@ -15,8 +15,8 @@
     <!--<include file="config/liquibase/changelog/20180814084110_added_entity_VesselType.xml" relativeToChangelogFile="false"/>-->
     <!--<include file="config/liquibase/changelog/20180814084111_added_entity_ClassificationSociety.xml" relativeToChangelogFile="false"/>-->
     <!--<include file="config/liquibase/changelog/20180814084109_added_entity_Vessel.xml" relativeToChangelogFile="false"/>-->
-    <include file="config/liquibase/changelog/20180815002937_added_entity_CompanyNameHistory.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20180815002939_added_entity_VesselNameHistory.xml" relativeToChangelogFile="false"/>
+    <!--<include file="config/liquibase/changelog/20180815002937_added_entity_CompanyNameHistory.xml" relativeToChangelogFile="false"/>-->
+    <!--<include file="config/liquibase/changelog/20180815002939_added_entity_VesselNameHistory.xml" relativeToChangelogFile="false"/>-->
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!--<include file="config/liquibase/changelog/20180330010551_added_entity_constraints_Company.xml" relativeToChangelogFile="false"/>-->
     <!--<include file="config/liquibase/changelog/20180330011536_added_entity_constraints_Port.xml" relativeToChangelogFile="false"/>-->
@@ -24,7 +24,7 @@
     <!--<include file="config/liquibase/changelog/20180508030946_added_entity_constraints_Correspondent.xml" relativeToChangelogFile="false"/>-->
     <!--<include file="config/liquibase/changelog/20180508030947_added_entity_constraints_CorrespondentContact.xml" relativeToChangelogFile="false"/>-->
     <!--<include file="config/liquibase/changelog/20180814084109_added_entity_constraints_Vessel.xml" relativeToChangelogFile="false"/>-->
-    <include file="config/liquibase/changelog/20180815002937_added_entity_constraints_CompanyNameHistory.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20180815002939_added_entity_constraints_VesselNameHistory.xml" relativeToChangelogFile="false"/>
+    <!--<include file="config/liquibase/changelog/20180815002937_added_entity_constraints_CompanyNameHistory.xml" relativeToChangelogFile="false"/>-->
+    <!--<include file="config/liquibase/changelog/20180815002939_added_entity_constraints_VesselNameHistory.xml" relativeToChangelogFile="false"/>-->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

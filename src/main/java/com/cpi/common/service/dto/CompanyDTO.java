@@ -19,7 +19,7 @@ public class CompanyDTO implements Serializable {
     @NotNull
     private String companyName;
 
-    private String countryNameChinese;
+    private String companyNameChinese;
 
     @Lob
     private String remark;
@@ -52,12 +52,12 @@ public class CompanyDTO implements Serializable {
         this.companyName = companyName;
     }
 
-    public String getCountryNameChinese() {
-        return countryNameChinese;
+    public String getCompanyNameChinese() {
+        return companyNameChinese;
     }
 
-    public void setCountryNameChinese(String countryNameChinese) {
-        this.countryNameChinese = countryNameChinese;
+    public void setCompanyNameChinese(String companyNameChinese) {
+        this.companyNameChinese = companyNameChinese;
     }
 
     public String getRemark() {
@@ -111,7 +111,7 @@ public class CompanyDTO implements Serializable {
             "id=" + getId() +
             ", companyCode='" + getCompanyCode() + "'" +
             ", companyName='" + getCompanyName() + "'" +
-            ", countryNameChinese='" + getCountryNameChinese() + "'" +
+            ", companyNameChinese='" + getCompanyNameChinese() + "'" +
             ", remark='" + getRemark() + "'" +
             ", country=" + getCountryId() +
             ", country='" + getCountryCountryName() + "'" +

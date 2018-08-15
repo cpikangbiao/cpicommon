@@ -1,15 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "country",
-            "otherEntityName": "country",
-            "otherEntityField": "countryName",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "company"
-        }
-    ],
+    "name": "Company",
     "fields": [
         {
             "fieldName": "companyCode",
@@ -28,7 +18,7 @@
             ]
         },
         {
-            "fieldName": "countryNameChinese",
+            "fieldName": "companyNameChinese",
             "fieldType": "String"
         },
         {
@@ -37,11 +27,24 @@
             "fieldTypeBlobContent": "text"
         }
     ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "country",
+            "otherEntityName": "country",
+            "otherEntityField": "countryName",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "company"
+        }
+    ],
     "changelogDate": "20180330010551",
     "entityTableName": "company",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
     "microserviceName": "cpicommon"
 }

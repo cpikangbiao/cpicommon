@@ -30,7 +30,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="country_name_chinese" type="varchar(255)">
+            <column name="company_name_chinese" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 

@@ -82,8 +82,8 @@ public class CompanyQueryService extends QueryService<Company> {
             if (criteria.getCompanyName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getCompanyName(), Company_.companyName));
             }
-            if (criteria.getCountryNameChinese() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getCountryNameChinese(), Company_.countryNameChinese));
+            if (criteria.getCompanyNameChinese() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getCompanyNameChinese(), Company_.companyNameChinese));
             }
             if (criteria.getCountryId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getCountryId(), Company_.country, Country_.id));
