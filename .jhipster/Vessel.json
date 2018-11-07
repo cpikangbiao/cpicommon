@@ -75,7 +75,7 @@
             "fieldType": "Double"
         },
         {
-            "fieldName": "size",
+            "fieldName": "vesselSize",
             "fieldType": "String"
         },
         {

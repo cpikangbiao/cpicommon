@@ -72,8 +72,8 @@ public class Vessel extends AbstractAuditingEntity implements Serializable {
     @Column(name = "hull_war_value")
     private Double hullWarValue;
 
-    @Column(name = "jhi_size")
-    private String size;
+    @Column(name = "vessel_size")
+    private String vesselSize;
 
     @Size(max = 20)
     @Column(name = "line", length = 20)
@@ -314,17 +314,17 @@ public class Vessel extends AbstractAuditingEntity implements Serializable {
         this.hullWarValue = hullWarValue;
     }
 
-    public String getSize() {
-        return size;
+    public String getVesselSize() {
+        return vesselSize;
     }
 
-    public Vessel size(String size) {
-        this.size = size;
+    public Vessel vesselSize(String vesselSize) {
+        this.vesselSize = vesselSize;
         return this;
     }
 
-    public void setSize(String size) {
-        this.size = size;
+    public void setVesselSize(String vesselSize) {
+        this.vesselSize = vesselSize;
     }
 
     public String getLine() {
@@ -484,7 +484,7 @@ public class Vessel extends AbstractAuditingEntity implements Serializable {
             ", hullIvValue=" + getHullIvValue() +
             ", hullWarAmount=" + getHullWarAmount() +
             ", hullWarValue=" + getHullWarValue() +
-            ", size='" + getSize() + "'" +
+            ", vesselSize='" + getVesselSize() + "'" +
             ", line='" + getLine() + "'" +
             ", deeper=" + getDeeper() +
             ", callSign='" + getCallSign() + "'" +

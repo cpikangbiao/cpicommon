@@ -44,7 +44,7 @@ public class VesselDTO implements Serializable {
 
     private Double hullWarValue;
 
-    private String size;
+    private String vesselSize;
 
     @Size(max = 20)
     private String line;
@@ -205,12 +205,12 @@ public class VesselDTO implements Serializable {
         this.hullWarValue = hullWarValue;
     }
 
-    public String getSize() {
-        return size;
+    public String getVesselSize() {
+        return vesselSize;
     }
 
-    public void setSize(String size) {
-        this.size = size;
+    public void setVesselSize(String vesselSize) {
+        this.vesselSize = vesselSize;
     }
 
     public String getLine() {
@@ -365,7 +365,7 @@ public class VesselDTO implements Serializable {
             ", hullIvValue=" + getHullIvValue() +
             ", hullWarAmount=" + getHullWarAmount() +
             ", hullWarValue=" + getHullWarValue() +
-            ", size='" + getSize() + "'" +
+            ", vesselSize='" + getVesselSize() + "'" +
             ", line='" + getLine() + "'" +
             ", deeper=" + getDeeper() +
             ", callSign='" + getCallSign() + "'" +

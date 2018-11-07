@@ -121,8 +121,8 @@ public class VesselQueryService extends QueryService<Vessel> {
             if (criteria.getHullWarValue() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getHullWarValue(), Vessel_.hullWarValue));
             }
-            if (criteria.getSize() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getSize(), Vessel_.size));
+            if (criteria.getVesselSize() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getVesselSize(), Vessel_.vesselSize));
             }
             if (criteria.getLine() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getLine(), Vessel_.line));

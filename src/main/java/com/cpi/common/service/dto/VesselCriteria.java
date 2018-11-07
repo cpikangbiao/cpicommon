@@ -58,7 +58,7 @@ public class VesselCriteria implements Serializable {
 
     private DoubleFilter hullWarValue;
 
-    private StringFilter size;
+    private StringFilter vesselSize;
 
     private StringFilter line;
 
@@ -209,12 +209,12 @@ public class VesselCriteria implements Serializable {
         this.hullWarValue = hullWarValue;
     }
 
-    public StringFilter getSize() {
-        return size;
+    public StringFilter getVesselSize() {
+        return vesselSize;
     }
 
-    public void setSize(StringFilter size) {
-        this.size = size;
+    public void setVesselSize(StringFilter vesselSize) {
+        this.vesselSize = vesselSize;
     }
 
     public StringFilter getLine() {
@@ -308,7 +308,7 @@ public class VesselCriteria implements Serializable {
                 (hullIvValue != null ? "hullIvValue=" + hullIvValue + ", " : "") +
                 (hullWarAmount != null ? "hullWarAmount=" + hullWarAmount + ", " : "") +
                 (hullWarValue != null ? "hullWarValue=" + hullWarValue + ", " : "") +
-                (size != null ? "size=" + size + ", " : "") +
+                (vesselSize != null ? "vesselSize=" + vesselSize + ", " : "") +
                 (line != null ? "line=" + line + ", " : "") +
                 (deeper != null ? "deeper=" + deeper + ", " : "") +
                 (callSign != null ? "callSign=" + callSign + ", " : "") +

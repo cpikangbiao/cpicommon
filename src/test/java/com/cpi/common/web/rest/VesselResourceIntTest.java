@@ -96,8 +96,8 @@ public class VesselResourceIntTest {
     private static final Double DEFAULT_HULL_WAR_VALUE = 1D;
     private static final Double UPDATED_HULL_WAR_VALUE = 2D;
 
-    private static final String DEFAULT_SIZE = "AAAAAAAAAA";
-    private static final String UPDATED_SIZE = "BBBBBBBBBB";
+    private static final String DEFAULT_VESSEL_SIZE = "AAAAAAAAAA";
+    private static final String UPDATED_VESSEL_SIZE = "BBBBBBBBBB";
 
     private static final String DEFAULT_LINE = "AAAAAAAAAA";
     private static final String UPDATED_LINE = "BBBBBBBBBB";
@@ -175,7 +175,7 @@ public class VesselResourceIntTest {
             .hullIvValue(DEFAULT_HULL_IV_VALUE)
             .hullWarAmount(DEFAULT_HULL_WAR_AMOUNT)
             .hullWarValue(DEFAULT_HULL_WAR_VALUE)
-            .size(DEFAULT_SIZE)
+            .vesselSize(DEFAULT_VESSEL_SIZE)
             .line(DEFAULT_LINE)
             .deeper(DEFAULT_DEEPER)
             .callSign(DEFAULT_CALL_SIGN)
@@ -219,7 +219,7 @@ public class VesselResourceIntTest {
         assertThat(testVessel.getHullIvValue()).isEqualTo(DEFAULT_HULL_IV_VALUE);
         assertThat(testVessel.getHullWarAmount()).isEqualTo(DEFAULT_HULL_WAR_AMOUNT);
         assertThat(testVessel.getHullWarValue()).isEqualTo(DEFAULT_HULL_WAR_VALUE);
-        assertThat(testVessel.getSize()).isEqualTo(DEFAULT_SIZE);
+        assertThat(testVessel.getVesselSize()).isEqualTo(DEFAULT_VESSEL_SIZE);
         assertThat(testVessel.getLine()).isEqualTo(DEFAULT_LINE);
         assertThat(testVessel.getDeeper()).isEqualTo(DEFAULT_DEEPER);
         assertThat(testVessel.getCallSign()).isEqualTo(DEFAULT_CALL_SIGN);
@@ -291,7 +291,7 @@ public class VesselResourceIntTest {
             .andExpect(jsonPath("$.[*].hullIvValue").value(hasItem(DEFAULT_HULL_IV_VALUE.doubleValue())))
             .andExpect(jsonPath("$.[*].hullWarAmount").value(hasItem(DEFAULT_HULL_WAR_AMOUNT.doubleValue())))
             .andExpect(jsonPath("$.[*].hullWarValue").value(hasItem(DEFAULT_HULL_WAR_VALUE.doubleValue())))
-            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].vesselSize").value(hasItem(DEFAULT_VESSEL_SIZE.toString())))
             .andExpect(jsonPath("$.[*].line").value(hasItem(DEFAULT_LINE.toString())))
             .andExpect(jsonPath("$.[*].deeper").value(hasItem(DEFAULT_DEEPER.doubleValue())))
             .andExpect(jsonPath("$.[*].callSign").value(hasItem(DEFAULT_CALL_SIGN.toString())))
@@ -325,7 +325,7 @@ public class VesselResourceIntTest {
             .andExpect(jsonPath("$.hullIvValue").value(DEFAULT_HULL_IV_VALUE.doubleValue()))
             .andExpect(jsonPath("$.hullWarAmount").value(DEFAULT_HULL_WAR_AMOUNT.doubleValue()))
             .andExpect(jsonPath("$.hullWarValue").value(DEFAULT_HULL_WAR_VALUE.doubleValue()))
-            .andExpect(jsonPath("$.size").value(DEFAULT_SIZE.toString()))
+            .andExpect(jsonPath("$.vesselSize").value(DEFAULT_VESSEL_SIZE.toString()))
             .andExpect(jsonPath("$.line").value(DEFAULT_LINE.toString()))
             .andExpect(jsonPath("$.deeper").value(DEFAULT_DEEPER.doubleValue()))
             .andExpect(jsonPath("$.callSign").value(DEFAULT_CALL_SIGN.toString()))
@@ -919,41 +919,41 @@ public class VesselResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllVesselsBySizeIsEqualToSomething() throws Exception {
+    public void getAllVesselsByVesselSizeIsEqualToSomething() throws Exception {
         // Initialize the database
         vesselRepository.saveAndFlush(vessel);
 
-        // Get all the vesselList where size equals to DEFAULT_SIZE
-        defaultVesselShouldBeFound("size.equals=" + DEFAULT_SIZE);
+        // Get all the vesselList where vesselSize equals to DEFAULT_VESSEL_SIZE
+        defaultVesselShouldBeFound("vesselSize.equals=" + DEFAULT_VESSEL_SIZE);
 
-        // Get all the vesselList where size equals to UPDATED_SIZE
-        defaultVesselShouldNotBeFound("size.equals=" + UPDATED_SIZE);
+        // Get all the vesselList where vesselSize equals to UPDATED_VESSEL_SIZE
+        defaultVesselShouldNotBeFound("vesselSize.equals=" + UPDATED_VESSEL_SIZE);
     }
 
     @Test
     @Transactional
-    public void getAllVesselsBySizeIsInShouldWork() throws Exception {
+    public void getAllVesselsByVesselSizeIsInShouldWork() throws Exception {
         // Initialize the database
         vesselRepository.saveAndFlush(vessel);
 
-        // Get all the vesselList where size in DEFAULT_SIZE or UPDATED_SIZE
-        defaultVesselShouldBeFound("size.in=" + DEFAULT_SIZE + "," + UPDATED_SIZE);
+        // Get all the vesselList where vesselSize in DEFAULT_VESSEL_SIZE or UPDATED_VESSEL_SIZE
+        defaultVesselShouldBeFound("vesselSize.in=" + DEFAULT_VESSEL_SIZE + "," + UPDATED_VESSEL_SIZE);
 
-        // Get all the vesselList where size equals to UPDATED_SIZE
-        defaultVesselShouldNotBeFound("size.in=" + UPDATED_SIZE);
+        // Get all the vesselList where vesselSize equals to UPDATED_VESSEL_SIZE
+        defaultVesselShouldNotBeFound("vesselSize.in=" + UPDATED_VESSEL_SIZE);
     }
 
     @Test
     @Transactional
-    public void getAllVesselsBySizeIsNullOrNotNull() throws Exception {
+    public void getAllVesselsByVesselSizeIsNullOrNotNull() throws Exception {
         // Initialize the database
         vesselRepository.saveAndFlush(vessel);
 
-        // Get all the vesselList where size is not null
-        defaultVesselShouldBeFound("size.specified=true");
+        // Get all the vesselList where vesselSize is not null
+        defaultVesselShouldBeFound("vesselSize.specified=true");
 
-        // Get all the vesselList where size is null
-        defaultVesselShouldNotBeFound("size.specified=false");
+        // Get all the vesselList where vesselSize is null
+        defaultVesselShouldNotBeFound("vesselSize.specified=false");
     }
 
     @Test
@@ -1229,7 +1229,7 @@ public class VesselResourceIntTest {
             .andExpect(jsonPath("$.[*].hullIvValue").value(hasItem(DEFAULT_HULL_IV_VALUE.doubleValue())))
             .andExpect(jsonPath("$.[*].hullWarAmount").value(hasItem(DEFAULT_HULL_WAR_AMOUNT.doubleValue())))
             .andExpect(jsonPath("$.[*].hullWarValue").value(hasItem(DEFAULT_HULL_WAR_VALUE.doubleValue())))
-            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].vesselSize").value(hasItem(DEFAULT_VESSEL_SIZE.toString())))
             .andExpect(jsonPath("$.[*].line").value(hasItem(DEFAULT_LINE.toString())))
             .andExpect(jsonPath("$.[*].deeper").value(hasItem(DEFAULT_DEEPER.doubleValue())))
             .andExpect(jsonPath("$.[*].callSign").value(hasItem(DEFAULT_CALL_SIGN.toString())))
@@ -1283,7 +1283,7 @@ public class VesselResourceIntTest {
             .hullIvValue(UPDATED_HULL_IV_VALUE)
             .hullWarAmount(UPDATED_HULL_WAR_AMOUNT)
             .hullWarValue(UPDATED_HULL_WAR_VALUE)
-            .size(UPDATED_SIZE)
+            .vesselSize(UPDATED_VESSEL_SIZE)
             .line(UPDATED_LINE)
             .deeper(UPDATED_DEEPER)
             .callSign(UPDATED_CALL_SIGN)
@@ -1314,7 +1314,7 @@ public class VesselResourceIntTest {
         assertThat(testVessel.getHullIvValue()).isEqualTo(UPDATED_HULL_IV_VALUE);
         assertThat(testVessel.getHullWarAmount()).isEqualTo(UPDATED_HULL_WAR_AMOUNT);
         assertThat(testVessel.getHullWarValue()).isEqualTo(UPDATED_HULL_WAR_VALUE);
-        assertThat(testVessel.getSize()).isEqualTo(UPDATED_SIZE);
+        assertThat(testVessel.getVesselSize()).isEqualTo(UPDATED_VESSEL_SIZE);
         assertThat(testVessel.getLine()).isEqualTo(UPDATED_LINE);
         assertThat(testVessel.getDeeper()).isEqualTo(UPDATED_DEEPER);
         assertThat(testVessel.getCallSign()).isEqualTo(UPDATED_CALL_SIGN);

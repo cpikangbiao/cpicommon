@@ -71,7 +71,7 @@ entity Vessel {
 		 hullIvValue Double,
 		 hullWarAmount Double,
 		 hullWarValue Double,
-		 size String,
+		 vesselSize String,
 		 line String maxlength(20),
 		 deeper Double,
 		 callSign String maxlength(15),
@@ -121,6 +121,30 @@ relationship ManyToOne {
 relationship ManyToOne {
          Vessel{registedPort(portName)} to Port
 }
+
+entity AddressType {
+	sortNum Integer  ,
+	addressTypeName String required ,
+	addressTypeNameChinese String  ,
+}
+
+entity Address {
+	name String ,
+	building String ,
+	street String ,
+	postbox String ,
+	zip String ,
+	city String ,
+}
+
+relationship ManyToOne {
+	Address{company(companyName)} to Company
+}
+
+relationship ManyToOne {
+	Address{addressType(addressTypeName)} to AddressType
+}
+
 
 // Set pagination options
 //paginate PartnerType with infinite-scroll
