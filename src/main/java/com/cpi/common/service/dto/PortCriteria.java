@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the Port entity. This class is used in PortResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class PortCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -34,12 +30,7 @@ public class PortCriteria implements Serializable {
 
     private StringFilter portNameChinese;
 
-    private LongFilter correspondentsId;
-
     private LongFilter countryId;
-
-    public PortCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -73,20 +64,41 @@ public class PortCriteria implements Serializable {
         this.portNameChinese = portNameChinese;
     }
 
-    public LongFilter getCorrespondentsId() {
-        return correspondentsId;
-    }
-
-    public void setCorrespondentsId(LongFilter correspondentsId) {
-        this.correspondentsId = correspondentsId;
-    }
-
     public LongFilter getCountryId() {
         return countryId;
     }
 
     public void setCountryId(LongFilter countryId) {
         this.countryId = countryId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final PortCriteria that = (PortCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(portCode, that.portCode) &&
+            Objects.equals(portName, that.portName) &&
+            Objects.equals(portNameChinese, that.portNameChinese) &&
+            Objects.equals(countryId, that.countryId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        portCode,
+        portName,
+        portNameChinese,
+        countryId
+        );
     }
 
     @Override
@@ -96,7 +108,6 @@ public class PortCriteria implements Serializable {
                 (portCode != null ? "portCode=" + portCode + ", " : "") +
                 (portName != null ? "portName=" + portName + ", " : "") +
                 (portNameChinese != null ? "portNameChinese=" + portNameChinese + ", " : "") +
-                (correspondentsId != null ? "correspondentsId=" + correspondentsId + ", " : "") +
                 (countryId != null ? "countryId=" + countryId + ", " : "") +
             "}";
     }

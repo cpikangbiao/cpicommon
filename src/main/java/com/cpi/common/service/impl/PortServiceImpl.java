@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing Port.
  */
@@ -42,6 +42,7 @@ public class PortServiceImpl implements PortService {
     @Override
     public PortDTO save(PortDTO portDTO) {
         log.debug("Request to save Port : {}", portDTO);
+
         Port port = portMapper.toEntity(portDTO);
         port = portRepository.save(port);
         return portMapper.toDto(port);

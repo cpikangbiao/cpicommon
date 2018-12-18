@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing Address.
  */
@@ -42,6 +42,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressDTO save(AddressDTO addressDTO) {
         log.debug("Request to save Address : {}", addressDTO);
+
         Address address = addressMapper.toEntity(addressDTO);
         address = addressRepository.save(address);
         return addressMapper.toDto(address);

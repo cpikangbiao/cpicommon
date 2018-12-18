@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -58,10 +59,8 @@ public class CurrencyRateResourceIntTest {
     @Autowired
     private CurrencyRateRepository currencyRateRepository;
 
-
     @Autowired
     private CurrencyRateMapper currencyRateMapper;
-    
 
     @Autowired
     private CurrencyRateService currencyRateService;
@@ -81,6 +80,9 @@ public class CurrencyRateResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCurrencyRateMockMvc;
 
     private CurrencyRate currencyRate;
@@ -93,7 +95,8 @@ public class CurrencyRateResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -207,7 +210,6 @@ public class CurrencyRateResourceIntTest {
             .andExpect(jsonPath("$.[*].currencyRate").value(hasItem(DEFAULT_CURRENCY_RATE.doubleValue())));
     }
     
-
     @Test
     @Transactional
     public void getCurrencyRate() throws Exception {
@@ -356,6 +358,12 @@ public class CurrencyRateResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(currencyRate.getId().intValue())))
             .andExpect(jsonPath("$.[*].rateDate").value(hasItem(DEFAULT_RATE_DATE.toString())))
             .andExpect(jsonPath("$.[*].currencyRate").value(hasItem(DEFAULT_CURRENCY_RATE.doubleValue())));
+
+        // Check, that the count call also returns 1
+        restCurrencyRateMockMvc.perform(get("/api/currency-rates/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -367,7 +375,14 @@ public class CurrencyRateResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCurrencyRateMockMvc.perform(get("/api/currency-rates/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -415,7 +430,7 @@ public class CurrencyRateResourceIntTest {
         // Create the CurrencyRate
         CurrencyRateDTO currencyRateDTO = currencyRateMapper.toDto(currencyRate);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCurrencyRateMockMvc.perform(put("/api/currency-rates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(currencyRateDTO)))

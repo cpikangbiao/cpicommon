@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the VesselType entity. This class is used in VesselTypeResource to
@@ -23,17 +19,14 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class VesselTypeCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
     private StringFilter vesselTypeName;
 
     private IntegerFilter sortNum;
-
-    public VesselTypeCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -57,6 +50,31 @@ public class VesselTypeCriteria implements Serializable {
 
     public void setSortNum(IntegerFilter sortNum) {
         this.sortNum = sortNum;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final VesselTypeCriteria that = (VesselTypeCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(vesselTypeName, that.vesselTypeName) &&
+            Objects.equals(sortNum, that.sortNum);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        vesselTypeName,
+        sortNum
+        );
     }
 
     @Override

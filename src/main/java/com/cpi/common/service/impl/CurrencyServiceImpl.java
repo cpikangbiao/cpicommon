@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing Currency.
  */
@@ -42,6 +42,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public CurrencyDTO save(CurrencyDTO currencyDTO) {
         log.debug("Request to save Currency : {}", currencyDTO);
+
         Currency currency = currencyMapper.toEntity(currencyDTO);
         currency = currencyRepository.save(currency);
         return currencyMapper.toDto(currency);

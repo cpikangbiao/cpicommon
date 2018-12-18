@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing VesselType.
  */
@@ -42,6 +42,7 @@ public class VesselTypeServiceImpl implements VesselTypeService {
     @Override
     public VesselTypeDTO save(VesselTypeDTO vesselTypeDTO) {
         log.debug("Request to save VesselType : {}", vesselTypeDTO);
+
         VesselType vesselType = vesselTypeMapper.toEntity(vesselTypeDTO);
         vesselType = vesselTypeRepository.save(vesselType);
         return vesselTypeMapper.toDto(vesselType);

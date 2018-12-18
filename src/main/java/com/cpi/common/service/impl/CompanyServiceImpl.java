@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing Company.
  */
@@ -42,6 +42,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyDTO save(CompanyDTO companyDTO) {
         log.debug("Request to save Company : {}", companyDTO);
+
         Company company = companyMapper.toEntity(companyDTO);
         company = companyRepository.save(company);
         return companyMapper.toDto(company);

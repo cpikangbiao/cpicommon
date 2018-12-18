@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.Company;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.CompanyRepository;
 import com.cpi.common.service.dto.CompanyCriteria;
-
 import com.cpi.common.service.dto.CompanyDTO;
 import com.cpi.common.service.mapper.CompanyMapper;
 
@@ -68,6 +69,18 @@ public class CompanyQueryService extends QueryService<Company> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CompanyCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Company> specification = createSpecification(criteria);
+        return companyRepository.count(specification);
+    }
+
+    /**
      * Function to convert CompanyCriteria to a {@link Specification}
      */
     private Specification<Company> createSpecification(CompanyCriteria criteria) {
@@ -86,10 +99,10 @@ public class CompanyQueryService extends QueryService<Company> {
                 specification = specification.and(buildStringSpecification(criteria.getCompanyNameChinese(), Company_.companyNameChinese));
             }
             if (criteria.getCountryId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getCountryId(), Company_.country, Country_.id));
+                specification = specification.and(buildSpecification(criteria.getCountryId(),
+                    root -> root.join(Company_.country, JoinType.LEFT).get(Country_.id)));
             }
         }
         return specification;
     }
-
 }

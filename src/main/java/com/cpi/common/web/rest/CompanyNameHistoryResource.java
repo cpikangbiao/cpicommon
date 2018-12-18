@@ -33,7 +33,7 @@ public class CompanyNameHistoryResource {
 
     private final Logger log = LoggerFactory.getLogger(CompanyNameHistoryResource.class);
 
-    private static final String ENTITY_NAME = "companyNameHistory";
+    private static final String ENTITY_NAME = "cpicommonCompanyNameHistory";
 
     private final CompanyNameHistoryService companyNameHistoryService;
 
@@ -99,7 +99,20 @@ public class CompanyNameHistoryResource {
         log.debug("REST request to get CompanyNameHistories by criteria: {}", criteria);
         Page<CompanyNameHistoryDTO> page = companyNameHistoryQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/company-name-histories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /company-name-histories/count : count all the companyNameHistories.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/company-name-histories/count")
+    @Timed
+    public ResponseEntity<Long> countCompanyNameHistories(CompanyNameHistoryCriteria criteria) {
+        log.debug("REST request to count CompanyNameHistories by criteria: {}", criteria);
+        return ResponseEntity.ok().body(companyNameHistoryQueryService.countByCriteria(criteria));
     }
 
     /**

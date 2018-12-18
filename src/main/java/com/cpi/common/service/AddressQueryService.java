@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.Address;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.AddressRepository;
 import com.cpi.common.service.dto.AddressCriteria;
-
 import com.cpi.common.service.dto.AddressDTO;
 import com.cpi.common.service.mapper.AddressMapper;
 
@@ -68,6 +69,18 @@ public class AddressQueryService extends QueryService<Address> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(AddressCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Address> specification = createSpecification(criteria);
+        return addressRepository.count(specification);
+    }
+
+    /**
      * Function to convert AddressCriteria to a {@link Specification}
      */
     private Specification<Address> createSpecification(AddressCriteria criteria) {
@@ -95,13 +108,14 @@ public class AddressQueryService extends QueryService<Address> {
                 specification = specification.and(buildStringSpecification(criteria.getCity(), Address_.city));
             }
             if (criteria.getCompanyId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getCompanyId(), Address_.company, Company_.id));
+                specification = specification.and(buildSpecification(criteria.getCompanyId(),
+                    root -> root.join(Address_.company, JoinType.LEFT).get(Company_.id)));
             }
             if (criteria.getAddressTypeId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getAddressTypeId(), Address_.addressType, AddressType_.id));
+                specification = specification.and(buildSpecification(criteria.getAddressTypeId(),
+                    root -> root.join(Address_.addressType, JoinType.LEFT).get(AddressType_.id)));
             }
         }
         return specification;
     }
-
 }

@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing CompanyNameHistory.
  */
@@ -42,6 +42,7 @@ public class CompanyNameHistoryServiceImpl implements CompanyNameHistoryService 
     @Override
     public CompanyNameHistoryDTO save(CompanyNameHistoryDTO companyNameHistoryDTO) {
         log.debug("Request to save CompanyNameHistory : {}", companyNameHistoryDTO);
+
         CompanyNameHistory companyNameHistory = companyNameHistoryMapper.toEntity(companyNameHistoryDTO);
         companyNameHistory = companyNameHistoryRepository.save(companyNameHistory);
         return companyNameHistoryMapper.toDto(companyNameHistory);

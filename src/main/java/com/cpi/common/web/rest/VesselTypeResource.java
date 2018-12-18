@@ -34,7 +34,7 @@ public class VesselTypeResource {
 
     private final Logger log = LoggerFactory.getLogger(VesselTypeResource.class);
 
-    private static final String ENTITY_NAME = "vesselType";
+    private static final String ENTITY_NAME = "cpicommonVesselType";
 
     private final VesselTypeService vesselTypeService;
 
@@ -100,7 +100,20 @@ public class VesselTypeResource {
         log.debug("REST request to get VesselTypes by criteria: {}", criteria);
         Page<VesselTypeDTO> page = vesselTypeQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/vessel-types");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /vessel-types/count : count all the vesselTypes.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/vessel-types/count")
+    @Timed
+    public ResponseEntity<Long> countVesselTypes(VesselTypeCriteria criteria) {
+        log.debug("REST request to count VesselTypes by criteria: {}", criteria);
+        return ResponseEntity.ok().body(vesselTypeQueryService.countByCriteria(criteria));
     }
 
     /**

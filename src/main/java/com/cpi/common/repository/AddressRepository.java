@@ -1,7 +1,6 @@
 package com.cpi.common.repository;
 
 import com.cpi.common.domain.Address;
-import com.cpi.common.domain.Company;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +12,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long>, JpaSpecificationExecutor<Address> {
 
-    Address findTopByAddressTypeIdAndCompanyId(Long addressTypeId, Long companyId);
 }

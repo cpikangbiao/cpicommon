@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,7 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
 import io.github.jhipster.service.filter.InstantFilter;
-
-
-
 
 /**
  * Criteria class for the VesselNameHistory entity. This class is used in VesselNameHistoryResource to
@@ -23,8 +20,8 @@ import io.github.jhipster.service.filter.InstantFilter;
  * fix type specific filters.
  */
 public class VesselNameHistoryCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -41,9 +38,6 @@ public class VesselNameHistoryCriteria implements Serializable {
     private InstantFilter endDate;
 
     private LongFilter vesselId;
-
-    public VesselNameHistoryCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -107,6 +101,41 @@ public class VesselNameHistoryCriteria implements Serializable {
 
     public void setVesselId(LongFilter vesselId) {
         this.vesselId = vesselId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final VesselNameHistoryCriteria that = (VesselNameHistoryCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(updateTime, that.updateTime) &&
+            Objects.equals(updateUser, that.updateUser) &&
+            Objects.equals(vesselName, that.vesselName) &&
+            Objects.equals(vesselChineseName, that.vesselChineseName) &&
+            Objects.equals(startDate, that.startDate) &&
+            Objects.equals(endDate, that.endDate) &&
+            Objects.equals(vesselId, that.vesselId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        updateTime,
+        updateUser,
+        vesselName,
+        vesselChineseName,
+        startDate,
+        endDate,
+        vesselId
+        );
     }
 
     @Override

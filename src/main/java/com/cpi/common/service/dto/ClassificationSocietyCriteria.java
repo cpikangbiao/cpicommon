@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the ClassificationSociety entity. This class is used in ClassificationSocietyResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class ClassificationSocietyCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -33,9 +29,6 @@ public class ClassificationSocietyCriteria implements Serializable {
     private StringFilter classificationSocietyNameAbbr;
 
     private IntegerFilter sortNum;
-
-    public ClassificationSocietyCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -67,6 +60,33 @@ public class ClassificationSocietyCriteria implements Serializable {
 
     public void setSortNum(IntegerFilter sortNum) {
         this.sortNum = sortNum;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final ClassificationSocietyCriteria that = (ClassificationSocietyCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(classificationSocietyName, that.classificationSocietyName) &&
+            Objects.equals(classificationSocietyNameAbbr, that.classificationSocietyNameAbbr) &&
+            Objects.equals(sortNum, that.sortNum);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        classificationSocietyName,
+        classificationSocietyNameAbbr,
+        sortNum
+        );
     }
 
     @Override

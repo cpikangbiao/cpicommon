@@ -49,10 +49,9 @@ public class Correspondent implements Serializable {
     @OneToMany(mappedBy = "correspondent")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<CorrespondentContact> contacts = new HashSet<>();
-
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties("correspondents")
+    @JsonIgnoreProperties("")
     private Port port;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.ClassificationSociety;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.ClassificationSocietyRepository;
 import com.cpi.common.service.dto.ClassificationSocietyCriteria;
-
 import com.cpi.common.service.dto.ClassificationSocietyDTO;
 import com.cpi.common.service.mapper.ClassificationSocietyMapper;
 
@@ -68,6 +69,18 @@ public class ClassificationSocietyQueryService extends QueryService<Classificati
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(ClassificationSocietyCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<ClassificationSociety> specification = createSpecification(criteria);
+        return classificationSocietyRepository.count(specification);
+    }
+
+    /**
      * Function to convert ClassificationSocietyCriteria to a {@link Specification}
      */
     private Specification<ClassificationSociety> createSpecification(ClassificationSocietyCriteria criteria) {
@@ -88,5 +101,4 @@ public class ClassificationSocietyQueryService extends QueryService<Classificati
         }
         return specification;
     }
-
 }

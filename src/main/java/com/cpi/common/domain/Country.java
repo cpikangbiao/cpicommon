@@ -1,6 +1,5 @@
 package com.cpi.common.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -8,8 +7,6 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -39,10 +36,6 @@ public class Country implements Serializable {
 
     @Column(name = "dial_code")
     private String dialCode;
-
-    @OneToMany(mappedBy = "country")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Port> ports = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -103,31 +96,6 @@ public class Country implements Serializable {
 
     public void setDialCode(String dialCode) {
         this.dialCode = dialCode;
-    }
-
-    public Set<Port> getPorts() {
-        return ports;
-    }
-
-    public Country ports(Set<Port> ports) {
-        this.ports = ports;
-        return this;
-    }
-
-    public Country addPorts(Port port) {
-        this.ports.add(port);
-        port.setCountry(this);
-        return this;
-    }
-
-    public Country removePorts(Port port) {
-        this.ports.remove(port);
-        port.setCountry(null);
-        return this;
-    }
-
-    public void setPorts(Set<Port> ports) {
-        this.ports = ports;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

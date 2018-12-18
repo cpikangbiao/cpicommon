@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.Correspondent;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.CorrespondentRepository;
 import com.cpi.common.service.dto.CorrespondentCriteria;
-
 import com.cpi.common.service.dto.CorrespondentDTO;
 import com.cpi.common.service.mapper.CorrespondentMapper;
 
@@ -68,6 +69,18 @@ public class CorrespondentQueryService extends QueryService<Correspondent> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CorrespondentCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Correspondent> specification = createSpecification(criteria);
+        return correspondentRepository.count(specification);
+    }
+
+    /**
      * Function to convert CorrespondentCriteria to a {@link Specification}
      */
     private Specification<Correspondent> createSpecification(CorrespondentCriteria criteria) {
@@ -95,13 +108,14 @@ public class CorrespondentQueryService extends QueryService<Correspondent> {
                 specification = specification.and(buildStringSpecification(criteria.getWebSite(), Correspondent_.webSite));
             }
             if (criteria.getContactsId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getContactsId(), Correspondent_.contacts, CorrespondentContact_.id));
+                specification = specification.and(buildSpecification(criteria.getContactsId(),
+                    root -> root.join(Correspondent_.contacts, JoinType.LEFT).get(CorrespondentContact_.id)));
             }
             if (criteria.getPortId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getPortId(), Correspondent_.port, Port_.id));
+                specification = specification.and(buildSpecification(criteria.getPortId(),
+                    root -> root.join(Correspondent_.port, JoinType.LEFT).get(Port_.id)));
             }
         }
         return specification;
     }
-
 }

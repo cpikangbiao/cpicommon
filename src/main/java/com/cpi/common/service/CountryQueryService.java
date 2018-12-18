@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.Country;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.CountryRepository;
 import com.cpi.common.service.dto.CountryCriteria;
-
 import com.cpi.common.service.dto.CountryDTO;
 import com.cpi.common.service.mapper.CountryMapper;
 
@@ -68,6 +69,18 @@ public class CountryQueryService extends QueryService<Country> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CountryCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Country> specification = createSpecification(criteria);
+        return countryRepository.count(specification);
+    }
+
+    /**
      * Function to convert CountryCriteria to a {@link Specification}
      */
     private Specification<Country> createSpecification(CountryCriteria criteria) {
@@ -88,11 +101,7 @@ public class CountryQueryService extends QueryService<Country> {
             if (criteria.getDialCode() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDialCode(), Country_.dialCode));
             }
-            if (criteria.getPortsId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getPortsId(), Country_.ports, Port_.id));
-            }
         }
         return specification;
     }
-
 }

@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -55,10 +56,8 @@ public class VesselTypeResourceIntTest {
     @Autowired
     private VesselTypeRepository vesselTypeRepository;
 
-
     @Autowired
     private VesselTypeMapper vesselTypeMapper;
-    
 
     @Autowired
     private VesselTypeService vesselTypeService;
@@ -78,6 +77,9 @@ public class VesselTypeResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restVesselTypeMockMvc;
 
     private VesselType vesselType;
@@ -90,7 +92,8 @@ public class VesselTypeResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -204,7 +207,6 @@ public class VesselTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].sortNum").value(hasItem(DEFAULT_SORT_NUM)));
     }
     
-
     @Test
     @Transactional
     public void getVesselType() throws Exception {
@@ -334,6 +336,12 @@ public class VesselTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(vesselType.getId().intValue())))
             .andExpect(jsonPath("$.[*].vesselTypeName").value(hasItem(DEFAULT_VESSEL_TYPE_NAME.toString())))
             .andExpect(jsonPath("$.[*].sortNum").value(hasItem(DEFAULT_SORT_NUM)));
+
+        // Check, that the count call also returns 1
+        restVesselTypeMockMvc.perform(get("/api/vessel-types/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -345,7 +353,14 @@ public class VesselTypeResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restVesselTypeMockMvc.perform(get("/api/vessel-types/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -393,7 +408,7 @@ public class VesselTypeResourceIntTest {
         // Create the VesselType
         VesselTypeDTO vesselTypeDTO = vesselTypeMapper.toDto(vesselType);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restVesselTypeMockMvc.perform(put("/api/vessel-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(vesselTypeDTO)))

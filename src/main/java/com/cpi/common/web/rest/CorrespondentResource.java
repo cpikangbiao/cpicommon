@@ -34,7 +34,7 @@ public class CorrespondentResource {
 
     private final Logger log = LoggerFactory.getLogger(CorrespondentResource.class);
 
-    private static final String ENTITY_NAME = "correspondent";
+    private static final String ENTITY_NAME = "cpicommonCorrespondent";
 
     private final CorrespondentService correspondentService;
 
@@ -100,7 +100,20 @@ public class CorrespondentResource {
         log.debug("REST request to get Correspondents by criteria: {}", criteria);
         Page<CorrespondentDTO> page = correspondentQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/correspondents");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /correspondents/count : count all the correspondents.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/correspondents/count")
+    @Timed
+    public ResponseEntity<Long> countCorrespondents(CorrespondentCriteria criteria) {
+        log.debug("REST request to count Correspondents by criteria: {}", criteria);
+        return ResponseEntity.ok().body(correspondentQueryService.countByCriteria(criteria));
     }
 
     /**

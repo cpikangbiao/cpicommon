@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the Address entity. This class is used in AddressResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class AddressCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -43,9 +39,6 @@ public class AddressCriteria implements Serializable {
     private LongFilter companyId;
 
     private LongFilter addressTypeId;
-
-    public AddressCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -117,6 +110,43 @@ public class AddressCriteria implements Serializable {
 
     public void setAddressTypeId(LongFilter addressTypeId) {
         this.addressTypeId = addressTypeId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final AddressCriteria that = (AddressCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(building, that.building) &&
+            Objects.equals(street, that.street) &&
+            Objects.equals(postbox, that.postbox) &&
+            Objects.equals(zip, that.zip) &&
+            Objects.equals(city, that.city) &&
+            Objects.equals(companyId, that.companyId) &&
+            Objects.equals(addressTypeId, that.addressTypeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        name,
+        building,
+        street,
+        postbox,
+        zip,
+        city,
+        companyId,
+        addressTypeId
+        );
     }
 
     @Override

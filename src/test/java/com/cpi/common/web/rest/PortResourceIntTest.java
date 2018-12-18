@@ -5,7 +5,6 @@ import com.cpi.common.CpicommonApp;
 import com.cpi.common.config.SecurityBeanOverrideConfiguration;
 
 import com.cpi.common.domain.Port;
-import com.cpi.common.domain.Correspondent;
 import com.cpi.common.domain.Country;
 import com.cpi.common.repository.PortRepository;
 import com.cpi.common.service.PortService;
@@ -28,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -60,10 +60,8 @@ public class PortResourceIntTest {
     @Autowired
     private PortRepository portRepository;
 
-
     @Autowired
     private PortMapper portMapper;
-    
 
     @Autowired
     private PortService portService;
@@ -83,6 +81,9 @@ public class PortResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restPortMockMvc;
 
     private Port port;
@@ -95,7 +96,8 @@ public class PortResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -174,7 +176,6 @@ public class PortResourceIntTest {
             .andExpect(jsonPath("$.[*].portNameChinese").value(hasItem(DEFAULT_PORT_NAME_CHINESE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getPort() throws Exception {
@@ -310,25 +311,6 @@ public class PortResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllPortsByCorrespondentsIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Correspondent correspondents = CorrespondentResourceIntTest.createEntity(em);
-        em.persist(correspondents);
-        em.flush();
-        port.addCorrespondents(correspondents);
-        portRepository.saveAndFlush(port);
-        Long correspondentsId = correspondents.getId();
-
-        // Get all the portList where correspondents equals to correspondentsId
-        defaultPortShouldBeFound("correspondentsId.equals=" + correspondentsId);
-
-        // Get all the portList where correspondents equals to correspondentsId + 1
-        defaultPortShouldNotBeFound("correspondentsId.equals=" + (correspondentsId + 1));
-    }
-
-
-    @Test
-    @Transactional
     public void getAllPortsByCountryIsEqualToSomething() throws Exception {
         // Initialize the database
         Country country = CountryResourceIntTest.createEntity(em);
@@ -356,6 +338,12 @@ public class PortResourceIntTest {
             .andExpect(jsonPath("$.[*].portCode").value(hasItem(DEFAULT_PORT_CODE.toString())))
             .andExpect(jsonPath("$.[*].portName").value(hasItem(DEFAULT_PORT_NAME.toString())))
             .andExpect(jsonPath("$.[*].portNameChinese").value(hasItem(DEFAULT_PORT_NAME_CHINESE.toString())));
+
+        // Check, that the count call also returns 1
+        restPortMockMvc.perform(get("/api/ports/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -367,7 +355,14 @@ public class PortResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restPortMockMvc.perform(get("/api/ports/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -417,7 +412,7 @@ public class PortResourceIntTest {
         // Create the Port
         PortDTO portDTO = portMapper.toDto(port);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPortMockMvc.perform(put("/api/ports")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(portDTO)))

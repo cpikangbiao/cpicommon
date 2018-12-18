@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -58,10 +59,8 @@ public class AddressTypeResourceIntTest {
     @Autowired
     private AddressTypeRepository addressTypeRepository;
 
-
     @Autowired
     private AddressTypeMapper addressTypeMapper;
-    
 
     @Autowired
     private AddressTypeService addressTypeService;
@@ -81,6 +80,9 @@ public class AddressTypeResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restAddressTypeMockMvc;
 
     private AddressType addressType;
@@ -93,7 +95,8 @@ public class AddressTypeResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -191,7 +194,6 @@ public class AddressTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].addressTypeNameChinese").value(hasItem(DEFAULT_ADDRESS_TYPE_NAME_CHINESE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getAddressType() throws Exception {
@@ -362,6 +364,12 @@ public class AddressTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].sortNum").value(hasItem(DEFAULT_SORT_NUM)))
             .andExpect(jsonPath("$.[*].addressTypeName").value(hasItem(DEFAULT_ADDRESS_TYPE_NAME.toString())))
             .andExpect(jsonPath("$.[*].addressTypeNameChinese").value(hasItem(DEFAULT_ADDRESS_TYPE_NAME_CHINESE.toString())));
+
+        // Check, that the count call also returns 1
+        restAddressTypeMockMvc.perform(get("/api/address-types/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -373,7 +381,14 @@ public class AddressTypeResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restAddressTypeMockMvc.perform(get("/api/address-types/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -423,7 +438,7 @@ public class AddressTypeResourceIntTest {
         // Create the AddressType
         AddressTypeDTO addressTypeDTO = addressTypeMapper.toDto(addressType);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAddressTypeMockMvc.perform(put("/api/address-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(addressTypeDTO)))

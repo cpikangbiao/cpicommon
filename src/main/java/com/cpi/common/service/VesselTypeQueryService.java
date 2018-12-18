@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.VesselType;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.VesselTypeRepository;
 import com.cpi.common.service.dto.VesselTypeCriteria;
-
 import com.cpi.common.service.dto.VesselTypeDTO;
 import com.cpi.common.service.mapper.VesselTypeMapper;
 
@@ -68,6 +69,18 @@ public class VesselTypeQueryService extends QueryService<VesselType> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(VesselTypeCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<VesselType> specification = createSpecification(criteria);
+        return vesselTypeRepository.count(specification);
+    }
+
+    /**
      * Function to convert VesselTypeCriteria to a {@link Specification}
      */
     private Specification<VesselType> createSpecification(VesselTypeCriteria criteria) {
@@ -85,5 +98,4 @@ public class VesselTypeQueryService extends QueryService<VesselType> {
         }
         return specification;
     }
-
 }

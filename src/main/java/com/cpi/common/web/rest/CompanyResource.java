@@ -34,7 +34,7 @@ public class CompanyResource {
 
     private final Logger log = LoggerFactory.getLogger(CompanyResource.class);
 
-    private static final String ENTITY_NAME = "company";
+    private static final String ENTITY_NAME = "cpicommonCompany";
 
     private final CompanyService companyService;
 
@@ -100,7 +100,20 @@ public class CompanyResource {
         log.debug("REST request to get Companies by criteria: {}", criteria);
         Page<CompanyDTO> page = companyQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/companies");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /companies/count : count all the companies.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/companies/count")
+    @Timed
+    public ResponseEntity<Long> countCompanies(CompanyCriteria criteria) {
+        log.debug("REST request to count Companies by criteria: {}", criteria);
+        return ResponseEntity.ok().body(companyQueryService.countByCriteria(criteria));
     }
 
     /**

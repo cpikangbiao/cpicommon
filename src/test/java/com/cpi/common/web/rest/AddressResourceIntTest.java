@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -69,10 +70,8 @@ public class AddressResourceIntTest {
     @Autowired
     private AddressRepository addressRepository;
 
-
     @Autowired
     private AddressMapper addressMapper;
-    
 
     @Autowired
     private AddressService addressService;
@@ -92,6 +91,9 @@ public class AddressResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restAddressMockMvc;
 
     private Address address;
@@ -104,7 +106,8 @@ public class AddressResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -192,7 +195,6 @@ public class AddressResourceIntTest {
             .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY.toString())));
     }
     
-
     @Test
     @Transactional
     public void getAddress() throws Exception {
@@ -497,6 +499,12 @@ public class AddressResourceIntTest {
             .andExpect(jsonPath("$.[*].postbox").value(hasItem(DEFAULT_POSTBOX.toString())))
             .andExpect(jsonPath("$.[*].zip").value(hasItem(DEFAULT_ZIP.toString())))
             .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY.toString())));
+
+        // Check, that the count call also returns 1
+        restAddressMockMvc.perform(get("/api/addresses/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -508,7 +516,14 @@ public class AddressResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restAddressMockMvc.perform(get("/api/addresses/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -564,7 +579,7 @@ public class AddressResourceIntTest {
         // Create the Address
         AddressDTO addressDTO = addressMapper.toDto(address);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAddressMockMvc.perform(put("/api/addresses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(addressDTO)))

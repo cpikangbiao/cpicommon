@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing CorrespondentContact.
  */
@@ -42,6 +42,7 @@ public class CorrespondentContactServiceImpl implements CorrespondentContactServ
     @Override
     public CorrespondentContactDTO save(CorrespondentContactDTO correspondentContactDTO) {
         log.debug("Request to save CorrespondentContact : {}", correspondentContactDTO);
+
         CorrespondentContact correspondentContact = correspondentContactMapper.toEntity(correspondentContactDTO);
         correspondentContact = correspondentContactRepository.save(correspondentContact);
         return correspondentContactMapper.toDto(correspondentContact);

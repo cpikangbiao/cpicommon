@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -58,10 +59,8 @@ public class ClassificationSocietyResourceIntTest {
     @Autowired
     private ClassificationSocietyRepository classificationSocietyRepository;
 
-
     @Autowired
     private ClassificationSocietyMapper classificationSocietyMapper;
-    
 
     @Autowired
     private ClassificationSocietyService classificationSocietyService;
@@ -81,6 +80,9 @@ public class ClassificationSocietyResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restClassificationSocietyMockMvc;
 
     private ClassificationSociety classificationSociety;
@@ -93,7 +95,8 @@ public class ClassificationSocietyResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -229,7 +232,6 @@ public class ClassificationSocietyResourceIntTest {
             .andExpect(jsonPath("$.[*].sortNum").value(hasItem(DEFAULT_SORT_NUM)));
     }
     
-
     @Test
     @Transactional
     public void getClassificationSociety() throws Exception {
@@ -400,6 +402,12 @@ public class ClassificationSocietyResourceIntTest {
             .andExpect(jsonPath("$.[*].classificationSocietyName").value(hasItem(DEFAULT_CLASSIFICATION_SOCIETY_NAME.toString())))
             .andExpect(jsonPath("$.[*].classificationSocietyNameAbbr").value(hasItem(DEFAULT_CLASSIFICATION_SOCIETY_NAME_ABBR.toString())))
             .andExpect(jsonPath("$.[*].sortNum").value(hasItem(DEFAULT_SORT_NUM)));
+
+        // Check, that the count call also returns 1
+        restClassificationSocietyMockMvc.perform(get("/api/classification-societies/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -411,7 +419,14 @@ public class ClassificationSocietyResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restClassificationSocietyMockMvc.perform(get("/api/classification-societies/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -461,7 +476,7 @@ public class ClassificationSocietyResourceIntTest {
         // Create the ClassificationSociety
         ClassificationSocietyDTO classificationSocietyDTO = classificationSocietyMapper.toDto(classificationSociety);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restClassificationSocietyMockMvc.perform(put("/api/classification-societies")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(classificationSocietyDTO)))

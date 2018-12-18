@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing AddressType.
  */
@@ -42,6 +42,7 @@ public class AddressTypeServiceImpl implements AddressTypeService {
     @Override
     public AddressTypeDTO save(AddressTypeDTO addressTypeDTO) {
         log.debug("Request to save AddressType : {}", addressTypeDTO);
+
         AddressType addressType = addressTypeMapper.toEntity(addressTypeDTO);
         addressType = addressTypeRepository.save(addressType);
         return addressTypeMapper.toDto(addressType);

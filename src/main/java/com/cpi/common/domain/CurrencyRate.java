@@ -32,8 +32,7 @@ public class CurrencyRate implements Serializable {
     @Column(name = "currency_rate", nullable = false)
     private Double currencyRate;
 
-    @OneToOne
-    @JoinColumn(unique = true)
+    @OneToOne    @JoinColumn(unique = true)
     private Currency currency;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

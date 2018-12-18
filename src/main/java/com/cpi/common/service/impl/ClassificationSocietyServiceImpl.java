@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing ClassificationSociety.
  */
@@ -42,6 +42,7 @@ public class ClassificationSocietyServiceImpl implements ClassificationSocietySe
     @Override
     public ClassificationSocietyDTO save(ClassificationSocietyDTO classificationSocietyDTO) {
         log.debug("Request to save ClassificationSociety : {}", classificationSocietyDTO);
+
         ClassificationSociety classificationSociety = classificationSocietyMapper.toEntity(classificationSocietyDTO);
         classificationSociety = classificationSocietyRepository.save(classificationSociety);
         return classificationSocietyMapper.toDto(classificationSociety);

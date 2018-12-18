@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -67,10 +68,8 @@ public class CurrencyResourceIntTest {
     @Autowired
     private CurrencyRepository currencyRepository;
 
-
     @Autowired
     private CurrencyMapper currencyMapper;
-    
 
     @Autowired
     private CurrencyService currencyService;
@@ -90,6 +89,9 @@ public class CurrencyResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCurrencyMockMvc;
 
     private Currency currency;
@@ -102,7 +104,8 @@ public class CurrencyResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -247,7 +250,6 @@ public class CurrencyResourceIntTest {
             .andExpect(jsonPath("$.[*].currencySort").value(hasItem(DEFAULT_CURRENCY_SORT)));
     }
     
-
     @Test
     @Transactional
     public void getCurrency() throws Exception {
@@ -541,6 +543,12 @@ public class CurrencyResourceIntTest {
             .andExpect(jsonPath("$.[*].countryNameChinese").value(hasItem(DEFAULT_COUNTRY_NAME_CHINESE.toString())))
             .andExpect(jsonPath("$.[*].nameAbbre").value(hasItem(DEFAULT_NAME_ABBRE.toString())))
             .andExpect(jsonPath("$.[*].currencySort").value(hasItem(DEFAULT_CURRENCY_SORT)));
+
+        // Check, that the count call also returns 1
+        restCurrencyMockMvc.perform(get("/api/currencies/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -552,7 +560,14 @@ public class CurrencyResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCurrencyMockMvc.perform(get("/api/currencies/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -608,7 +623,7 @@ public class CurrencyResourceIntTest {
         // Create the Currency
         CurrencyDTO currencyDTO = currencyMapper.toDto(currency);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCurrencyMockMvc.perform(put("/api/currencies")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(currencyDTO)))

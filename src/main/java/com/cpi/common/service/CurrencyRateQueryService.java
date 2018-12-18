@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.CurrencyRate;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.CurrencyRateRepository;
 import com.cpi.common.service.dto.CurrencyRateCriteria;
-
 import com.cpi.common.service.dto.CurrencyRateDTO;
 import com.cpi.common.service.mapper.CurrencyRateMapper;
 
@@ -68,6 +69,18 @@ public class CurrencyRateQueryService extends QueryService<CurrencyRate> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CurrencyRateCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<CurrencyRate> specification = createSpecification(criteria);
+        return currencyRateRepository.count(specification);
+    }
+
+    /**
      * Function to convert CurrencyRateCriteria to a {@link Specification}
      */
     private Specification<CurrencyRate> createSpecification(CurrencyRateCriteria criteria) {
@@ -83,10 +96,10 @@ public class CurrencyRateQueryService extends QueryService<CurrencyRate> {
                 specification = specification.and(buildRangeSpecification(criteria.getCurrencyRate(), CurrencyRate_.currencyRate));
             }
             if (criteria.getCurrencyId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getCurrencyId(), CurrencyRate_.currency, Currency_.id));
+                specification = specification.and(buildSpecification(criteria.getCurrencyId(),
+                    root -> root.join(CurrencyRate_.currency, JoinType.LEFT).get(Currency_.id)));
             }
         }
         return specification;
     }
-
 }

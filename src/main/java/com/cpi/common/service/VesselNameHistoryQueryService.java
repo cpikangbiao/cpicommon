@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.VesselNameHistory;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.VesselNameHistoryRepository;
 import com.cpi.common.service.dto.VesselNameHistoryCriteria;
-
 import com.cpi.common.service.dto.VesselNameHistoryDTO;
 import com.cpi.common.service.mapper.VesselNameHistoryMapper;
 
@@ -68,6 +69,18 @@ public class VesselNameHistoryQueryService extends QueryService<VesselNameHistor
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(VesselNameHistoryCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<VesselNameHistory> specification = createSpecification(criteria);
+        return vesselNameHistoryRepository.count(specification);
+    }
+
+    /**
      * Function to convert VesselNameHistoryCriteria to a {@link Specification}
      */
     private Specification<VesselNameHistory> createSpecification(VesselNameHistoryCriteria criteria) {
@@ -95,10 +108,10 @@ public class VesselNameHistoryQueryService extends QueryService<VesselNameHistor
                 specification = specification.and(buildRangeSpecification(criteria.getEndDate(), VesselNameHistory_.endDate));
             }
             if (criteria.getVesselId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getVesselId(), VesselNameHistory_.vessel, Vessel_.id));
+                specification = specification.and(buildSpecification(criteria.getVesselId(),
+                    root -> root.join(VesselNameHistory_.vessel, JoinType.LEFT).get(Vessel_.id)));
             }
         }
         return specification;
     }
-
 }

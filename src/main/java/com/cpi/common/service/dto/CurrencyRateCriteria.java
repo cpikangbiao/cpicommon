@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,7 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
 import io.github.jhipster.service.filter.LocalDateFilter;
-
-
 
 /**
  * Criteria class for the CurrencyRate entity. This class is used in CurrencyRateResource to
@@ -23,8 +20,8 @@ import io.github.jhipster.service.filter.LocalDateFilter;
  * fix type specific filters.
  */
 public class CurrencyRateCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -33,9 +30,6 @@ public class CurrencyRateCriteria implements Serializable {
     private DoubleFilter currencyRate;
 
     private LongFilter currencyId;
-
-    public CurrencyRateCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -67,6 +61,33 @@ public class CurrencyRateCriteria implements Serializable {
 
     public void setCurrencyId(LongFilter currencyId) {
         this.currencyId = currencyId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final CurrencyRateCriteria that = (CurrencyRateCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(rateDate, that.rateDate) &&
+            Objects.equals(currencyRate, that.currencyRate) &&
+            Objects.equals(currencyId, that.currencyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        rateDate,
+        currencyRate,
+        currencyId
+        );
     }
 
     @Override

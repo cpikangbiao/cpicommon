@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the Country entity. This class is used in CountryResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class CountryCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -35,11 +31,6 @@ public class CountryCriteria implements Serializable {
     private StringFilter countryNameChinese;
 
     private StringFilter dialCode;
-
-    private LongFilter portsId;
-
-    public CountryCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -81,12 +72,33 @@ public class CountryCriteria implements Serializable {
         this.dialCode = dialCode;
     }
 
-    public LongFilter getPortsId() {
-        return portsId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final CountryCriteria that = (CountryCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(countryName, that.countryName) &&
+            Objects.equals(countryNameAbbr, that.countryNameAbbr) &&
+            Objects.equals(countryNameChinese, that.countryNameChinese) &&
+            Objects.equals(dialCode, that.dialCode);
     }
 
-    public void setPortsId(LongFilter portsId) {
-        this.portsId = portsId;
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        countryName,
+        countryNameAbbr,
+        countryNameChinese,
+        dialCode
+        );
     }
 
     @Override
@@ -97,7 +109,6 @@ public class CountryCriteria implements Serializable {
                 (countryNameAbbr != null ? "countryNameAbbr=" + countryNameAbbr + ", " : "") +
                 (countryNameChinese != null ? "countryNameChinese=" + countryNameChinese + ", " : "") +
                 (dialCode != null ? "dialCode=" + dialCode + ", " : "") +
-                (portsId != null ? "portsId=" + portsId + ", " : "") +
             "}";
     }
 

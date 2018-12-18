@@ -34,7 +34,7 @@ public class ClassificationSocietyResource {
 
     private final Logger log = LoggerFactory.getLogger(ClassificationSocietyResource.class);
 
-    private static final String ENTITY_NAME = "classificationSociety";
+    private static final String ENTITY_NAME = "cpicommonClassificationSociety";
 
     private final ClassificationSocietyService classificationSocietyService;
 
@@ -100,7 +100,20 @@ public class ClassificationSocietyResource {
         log.debug("REST request to get ClassificationSocieties by criteria: {}", criteria);
         Page<ClassificationSocietyDTO> page = classificationSocietyQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/classification-societies");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /classification-societies/count : count all the classificationSocieties.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/classification-societies/count")
+    @Timed
+    public ResponseEntity<Long> countClassificationSocieties(ClassificationSocietyCriteria criteria) {
+        log.debug("REST request to count ClassificationSocieties by criteria: {}", criteria);
+        return ResponseEntity.ok().body(classificationSocietyQueryService.countByCriteria(criteria));
     }
 
     /**

@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.CompanyNameHistory;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.CompanyNameHistoryRepository;
 import com.cpi.common.service.dto.CompanyNameHistoryCriteria;
-
 import com.cpi.common.service.dto.CompanyNameHistoryDTO;
 import com.cpi.common.service.mapper.CompanyNameHistoryMapper;
 
@@ -68,6 +69,18 @@ public class CompanyNameHistoryQueryService extends QueryService<CompanyNameHist
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CompanyNameHistoryCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<CompanyNameHistory> specification = createSpecification(criteria);
+        return companyNameHistoryRepository.count(specification);
+    }
+
+    /**
      * Function to convert CompanyNameHistoryCriteria to a {@link Specification}
      */
     private Specification<CompanyNameHistory> createSpecification(CompanyNameHistoryCriteria criteria) {
@@ -95,10 +108,10 @@ public class CompanyNameHistoryQueryService extends QueryService<CompanyNameHist
                 specification = specification.and(buildRangeSpecification(criteria.getEndDate(), CompanyNameHistory_.endDate));
             }
             if (criteria.getCompanyId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getCompanyId(), CompanyNameHistory_.company, Company_.id));
+                specification = specification.and(buildSpecification(criteria.getCompanyId(),
+                    root -> root.join(CompanyNameHistory_.company, JoinType.LEFT).get(Company_.id)));
             }
         }
         return specification;
     }
-
 }

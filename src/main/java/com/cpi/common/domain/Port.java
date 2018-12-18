@@ -1,15 +1,11 @@
 package com.cpi.common.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -35,12 +31,7 @@ public class Port implements Serializable {
     @Column(name = "port_name_chinese")
     private String portNameChinese;
 
-    @OneToMany(mappedBy = "port")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Correspondent> correspondents = new HashSet<>();
-
-    @ManyToOne
-    @JsonIgnoreProperties("ports")
+    @OneToOne    @JoinColumn(unique = true)
     private Country country;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -89,31 +80,6 @@ public class Port implements Serializable {
 
     public void setPortNameChinese(String portNameChinese) {
         this.portNameChinese = portNameChinese;
-    }
-
-    public Set<Correspondent> getCorrespondents() {
-        return correspondents;
-    }
-
-    public Port correspondents(Set<Correspondent> correspondents) {
-        this.correspondents = correspondents;
-        return this;
-    }
-
-    public Port addCorrespondents(Correspondent correspondent) {
-        this.correspondents.add(correspondent);
-        correspondent.setPort(this);
-        return this;
-    }
-
-    public Port removeCorrespondents(Correspondent correspondent) {
-        this.correspondents.remove(correspondent);
-        correspondent.setPort(null);
-        return this;
-    }
-
-    public void setCorrespondents(Set<Correspondent> correspondents) {
-        this.correspondents = correspondents;
     }
 
     public Country getCountry() {

@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -63,10 +64,8 @@ public class CompanyResourceIntTest {
     @Autowired
     private CompanyRepository companyRepository;
 
-
     @Autowired
     private CompanyMapper companyMapper;
-    
 
     @Autowired
     private CompanyService companyService;
@@ -86,6 +85,9 @@ public class CompanyResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCompanyMockMvc;
 
     private Company company;
@@ -98,7 +100,8 @@ public class CompanyResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -218,7 +221,6 @@ public class CompanyResourceIntTest {
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())));
     }
     
-
     @Test
     @Transactional
     public void getCompany() throws Exception {
@@ -383,6 +385,12 @@ public class CompanyResourceIntTest {
             .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME.toString())))
             .andExpect(jsonPath("$.[*].companyNameChinese").value(hasItem(DEFAULT_COMPANY_NAME_CHINESE.toString())))
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())));
+
+        // Check, that the count call also returns 1
+        restCompanyMockMvc.perform(get("/api/companies/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -394,7 +402,14 @@ public class CompanyResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCompanyMockMvc.perform(get("/api/companies/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -446,7 +461,7 @@ public class CompanyResourceIntTest {
         // Create the Company
         CompanyDTO companyDTO = companyMapper.toDto(company);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCompanyMockMvc.perform(put("/api/companies")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(companyDTO)))

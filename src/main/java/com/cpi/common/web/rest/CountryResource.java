@@ -34,7 +34,7 @@ public class CountryResource {
 
     private final Logger log = LoggerFactory.getLogger(CountryResource.class);
 
-    private static final String ENTITY_NAME = "country";
+    private static final String ENTITY_NAME = "cpicommonCountry";
 
     private final CountryService countryService;
 
@@ -100,7 +100,20 @@ public class CountryResource {
         log.debug("REST request to get Countries by criteria: {}", criteria);
         Page<CountryDTO> page = countryQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/countries");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /countries/count : count all the countries.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/countries/count")
+    @Timed
+    public ResponseEntity<Long> countCountries(CountryCriteria criteria) {
+        log.debug("REST request to count Countries by criteria: {}", criteria);
+        return ResponseEntity.ok().body(countryQueryService.countByCriteria(criteria));
     }
 
     /**

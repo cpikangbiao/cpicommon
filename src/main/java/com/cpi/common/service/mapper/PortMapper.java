@@ -15,7 +15,6 @@ public interface PortMapper extends EntityMapper<PortDTO, Port> {
     @Mapping(source = "country.countryName", target = "countryCountryName")
     PortDTO toDto(Port port);
 
-    @Mapping(target = "correspondents", ignore = true)
     @Mapping(source = "countryId", target = "country")
     Port toEntity(PortDTO portDTO);
 

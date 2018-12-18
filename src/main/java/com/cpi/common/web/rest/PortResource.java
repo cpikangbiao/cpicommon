@@ -33,7 +33,7 @@ public class PortResource {
 
     private final Logger log = LoggerFactory.getLogger(PortResource.class);
 
-    private static final String ENTITY_NAME = "port";
+    private static final String ENTITY_NAME = "cpicommonPort";
 
     private final PortService portService;
 
@@ -99,7 +99,20 @@ public class PortResource {
         log.debug("REST request to get Ports by criteria: {}", criteria);
         Page<PortDTO> page = portQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ports");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /ports/count : count all the ports.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/ports/count")
+    @Timed
+    public ResponseEntity<Long> countPorts(PortCriteria criteria) {
+        log.debug("REST request to count Ports by criteria: {}", criteria);
+        return ResponseEntity.ok().body(portQueryService.countByCriteria(criteria));
     }
 
     /**

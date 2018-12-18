@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,7 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
 import io.github.jhipster.service.filter.InstantFilter;
-
-
-
 
 /**
  * Criteria class for the CompanyNameHistory entity. This class is used in CompanyNameHistoryResource to
@@ -23,8 +20,8 @@ import io.github.jhipster.service.filter.InstantFilter;
  * fix type specific filters.
  */
 public class CompanyNameHistoryCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -41,9 +38,6 @@ public class CompanyNameHistoryCriteria implements Serializable {
     private InstantFilter endDate;
 
     private LongFilter companyId;
-
-    public CompanyNameHistoryCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -107,6 +101,41 @@ public class CompanyNameHistoryCriteria implements Serializable {
 
     public void setCompanyId(LongFilter companyId) {
         this.companyId = companyId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final CompanyNameHistoryCriteria that = (CompanyNameHistoryCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(updateTime, that.updateTime) &&
+            Objects.equals(updateUser, that.updateUser) &&
+            Objects.equals(companyName, that.companyName) &&
+            Objects.equals(companyChineseName, that.companyChineseName) &&
+            Objects.equals(startDate, that.startDate) &&
+            Objects.equals(endDate, that.endDate) &&
+            Objects.equals(companyId, that.companyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        updateTime,
+        updateUser,
+        companyName,
+        companyChineseName,
+        startDate,
+        endDate,
+        companyId
+        );
     }
 
     @Override

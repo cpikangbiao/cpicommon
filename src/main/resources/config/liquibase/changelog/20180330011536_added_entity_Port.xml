@@ -33,11 +33,9 @@
             <column name="port_name_chinese" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-
             <column name="country_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints unique="true" nullable="true" uniqueConstraintName="ux_port_country_id" />
             </column>
-
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         

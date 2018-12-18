@@ -33,7 +33,7 @@ public class AddressResource {
 
     private final Logger log = LoggerFactory.getLogger(AddressResource.class);
 
-    private static final String ENTITY_NAME = "address";
+    private static final String ENTITY_NAME = "cpicommonAddress";
 
     private final AddressService addressService;
 
@@ -99,7 +99,20 @@ public class AddressResource {
         log.debug("REST request to get Addresses by criteria: {}", criteria);
         Page<AddressDTO> page = addressQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /addresses/count : count all the addresses.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/addresses/count")
+    @Timed
+    public ResponseEntity<Long> countAddresses(AddressCriteria criteria) {
+        log.debug("REST request to count Addresses by criteria: {}", criteria);
+        return ResponseEntity.ok().body(addressQueryService.countByCriteria(criteria));
     }
 
     /**

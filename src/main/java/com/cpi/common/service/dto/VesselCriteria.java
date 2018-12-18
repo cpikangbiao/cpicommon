@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the Vessel entity. This class is used in VesselResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class VesselCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -77,9 +73,6 @@ public class VesselCriteria implements Serializable {
     private LongFilter vesselOwnerCompanyId;
 
     private LongFilter registedPortId;
-
-    public VesselCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -287,6 +280,77 @@ public class VesselCriteria implements Serializable {
 
     public void setRegistedPortId(LongFilter registedPortId) {
         this.registedPortId = registedPortId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final VesselCriteria that = (VesselCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(vesselCode, that.vesselCode) &&
+            Objects.equals(vesselName, that.vesselName) &&
+            Objects.equals(vesselChineseName, that.vesselChineseName) &&
+            Objects.equals(gtr, that.gtr) &&
+            Objects.equals(wrt, that.wrt) &&
+            Objects.equals(buildLocation, that.buildLocation) &&
+            Objects.equals(buildYear, that.buildYear) &&
+            Objects.equals(foc, that.foc) &&
+            Objects.equals(dwt, that.dwt) &&
+            Objects.equals(hullHmAmount, that.hullHmAmount) &&
+            Objects.equals(hullHmValue, that.hullHmValue) &&
+            Objects.equals(hullIvAmount, that.hullIvAmount) &&
+            Objects.equals(hullIvValue, that.hullIvValue) &&
+            Objects.equals(hullWarAmount, that.hullWarAmount) &&
+            Objects.equals(hullWarValue, that.hullWarValue) &&
+            Objects.equals(vesselSize, that.vesselSize) &&
+            Objects.equals(line, that.line) &&
+            Objects.equals(deeper, that.deeper) &&
+            Objects.equals(callSign, that.callSign) &&
+            Objects.equals(imoNumber, that.imoNumber) &&
+            Objects.equals(vesselCountryId, that.vesselCountryId) &&
+            Objects.equals(vesselCurrencyId, that.vesselCurrencyId) &&
+            Objects.equals(vesselTypeId, that.vesselTypeId) &&
+            Objects.equals(vesselOwnerCompanyId, that.vesselOwnerCompanyId) &&
+            Objects.equals(registedPortId, that.registedPortId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        vesselCode,
+        vesselName,
+        vesselChineseName,
+        gtr,
+        wrt,
+        buildLocation,
+        buildYear,
+        foc,
+        dwt,
+        hullHmAmount,
+        hullHmValue,
+        hullIvAmount,
+        hullIvValue,
+        hullWarAmount,
+        hullWarValue,
+        vesselSize,
+        line,
+        deeper,
+        callSign,
+        imoNumber,
+        vesselCountryId,
+        vesselCurrencyId,
+        vesselTypeId,
+        vesselOwnerCompanyId,
+        registedPortId
+        );
     }
 
     @Override

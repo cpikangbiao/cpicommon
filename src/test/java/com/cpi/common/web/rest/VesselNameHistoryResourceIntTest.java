@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
@@ -70,10 +71,8 @@ public class VesselNameHistoryResourceIntTest {
     @Autowired
     private VesselNameHistoryRepository vesselNameHistoryRepository;
 
-
     @Autowired
     private VesselNameHistoryMapper vesselNameHistoryMapper;
-    
 
     @Autowired
     private VesselNameHistoryService vesselNameHistoryService;
@@ -93,6 +92,9 @@ public class VesselNameHistoryResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restVesselNameHistoryMockMvc;
 
     private VesselNameHistory vesselNameHistory;
@@ -105,7 +107,8 @@ public class VesselNameHistoryResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -193,7 +196,6 @@ public class VesselNameHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getVesselNameHistory() throws Exception {
@@ -506,6 +508,12 @@ public class VesselNameHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].vesselChineseName").value(hasItem(DEFAULT_VESSEL_CHINESE_NAME.toString())))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restVesselNameHistoryMockMvc.perform(get("/api/vessel-name-histories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -517,7 +525,14 @@ public class VesselNameHistoryResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restVesselNameHistoryMockMvc.perform(get("/api/vessel-name-histories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -573,7 +588,7 @@ public class VesselNameHistoryResourceIntTest {
         // Create the VesselNameHistory
         VesselNameHistoryDTO vesselNameHistoryDTO = vesselNameHistoryMapper.toDto(vesselNameHistory);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restVesselNameHistoryMockMvc.perform(put("/api/vessel-name-histories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(vesselNameHistoryDTO)))

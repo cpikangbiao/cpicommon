@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the Company entity. This class is used in CompanyResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class CompanyCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -35,9 +31,6 @@ public class CompanyCriteria implements Serializable {
     private StringFilter companyNameChinese;
 
     private LongFilter countryId;
-
-    public CompanyCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -77,6 +70,35 @@ public class CompanyCriteria implements Serializable {
 
     public void setCountryId(LongFilter countryId) {
         this.countryId = countryId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final CompanyCriteria that = (CompanyCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(companyCode, that.companyCode) &&
+            Objects.equals(companyName, that.companyName) &&
+            Objects.equals(companyNameChinese, that.companyNameChinese) &&
+            Objects.equals(countryId, that.countryId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        companyCode,
+        companyName,
+        companyNameChinese,
+        countryId
+        );
     }
 
     @Override

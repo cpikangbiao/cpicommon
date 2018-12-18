@@ -19,12 +19,6 @@ public class AddressType implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static  final Long ADDRESS_TYPE_REGISTER = new Long(1);
-
-    public static  final Long ADDRESS_TYPE_ENGLISH  = new Long(2);
-
-    public static  final Long ADDRESS_TYPE_CHINESE  = new Long(3);
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

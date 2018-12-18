@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
+
 /**
  * Service Implementation for managing VesselNameHistory.
  */
@@ -42,6 +42,7 @@ public class VesselNameHistoryServiceImpl implements VesselNameHistoryService {
     @Override
     public VesselNameHistoryDTO save(VesselNameHistoryDTO vesselNameHistoryDTO) {
         log.debug("Request to save VesselNameHistory : {}", vesselNameHistoryDTO);
+
         VesselNameHistory vesselNameHistory = vesselNameHistoryMapper.toEntity(vesselNameHistoryDTO);
         vesselNameHistory = vesselNameHistoryRepository.save(vesselNameHistory);
         return vesselNameHistoryMapper.toDto(vesselNameHistory);

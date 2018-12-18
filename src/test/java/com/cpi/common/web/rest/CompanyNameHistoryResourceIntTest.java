@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
@@ -70,10 +71,8 @@ public class CompanyNameHistoryResourceIntTest {
     @Autowired
     private CompanyNameHistoryRepository companyNameHistoryRepository;
 
-
     @Autowired
     private CompanyNameHistoryMapper companyNameHistoryMapper;
-    
 
     @Autowired
     private CompanyNameHistoryService companyNameHistoryService;
@@ -93,6 +92,9 @@ public class CompanyNameHistoryResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCompanyNameHistoryMockMvc;
 
     private CompanyNameHistory companyNameHistory;
@@ -105,7 +107,8 @@ public class CompanyNameHistoryResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -193,7 +196,6 @@ public class CompanyNameHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getCompanyNameHistory() throws Exception {
@@ -506,6 +508,12 @@ public class CompanyNameHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].companyChineseName").value(hasItem(DEFAULT_COMPANY_CHINESE_NAME.toString())))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restCompanyNameHistoryMockMvc.perform(get("/api/company-name-histories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -517,7 +525,14 @@ public class CompanyNameHistoryResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCompanyNameHistoryMockMvc.perform(get("/api/company-name-histories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -573,7 +588,7 @@ public class CompanyNameHistoryResourceIntTest {
         // Create the CompanyNameHistory
         CompanyNameHistoryDTO companyNameHistoryDTO = companyNameHistoryMapper.toDto(companyNameHistory);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCompanyNameHistoryMockMvc.perform(put("/api/company-name-histories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(companyNameHistoryDTO)))

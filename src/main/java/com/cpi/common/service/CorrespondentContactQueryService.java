@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.CorrespondentContact;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.CorrespondentContactRepository;
 import com.cpi.common.service.dto.CorrespondentContactCriteria;
-
 import com.cpi.common.service.dto.CorrespondentContactDTO;
 import com.cpi.common.service.mapper.CorrespondentContactMapper;
 
@@ -68,6 +69,18 @@ public class CorrespondentContactQueryService extends QueryService<Correspondent
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CorrespondentContactCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<CorrespondentContact> specification = createSpecification(criteria);
+        return correspondentContactRepository.count(specification);
+    }
+
+    /**
      * Function to convert CorrespondentContactCriteria to a {@link Specification}
      */
     private Specification<CorrespondentContact> createSpecification(CorrespondentContactCriteria criteria) {
@@ -92,10 +105,10 @@ public class CorrespondentContactQueryService extends QueryService<Correspondent
                 specification = specification.and(buildStringSpecification(criteria.getWebSite(), CorrespondentContact_.webSite));
             }
             if (criteria.getCorrespondentId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getCorrespondentId(), CorrespondentContact_.correspondent, Correspondent_.id));
+                specification = specification.and(buildSpecification(criteria.getCorrespondentId(),
+                    root -> root.join(CorrespondentContact_.correspondent, JoinType.LEFT).get(Correspondent_.id)));
             }
         }
         return specification;
     }
-
 }

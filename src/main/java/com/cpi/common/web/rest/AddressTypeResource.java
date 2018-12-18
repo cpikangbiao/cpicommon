@@ -34,7 +34,7 @@ public class AddressTypeResource {
 
     private final Logger log = LoggerFactory.getLogger(AddressTypeResource.class);
 
-    private static final String ENTITY_NAME = "addressType";
+    private static final String ENTITY_NAME = "cpicommonAddressType";
 
     private final AddressTypeService addressTypeService;
 
@@ -100,7 +100,20 @@ public class AddressTypeResource {
         log.debug("REST request to get AddressTypes by criteria: {}", criteria);
         Page<AddressTypeDTO> page = addressTypeQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/address-types");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /address-types/count : count all the addressTypes.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/address-types/count")
+    @Timed
+    public ResponseEntity<Long> countAddressTypes(AddressTypeCriteria criteria) {
+        log.debug("REST request to count AddressTypes by criteria: {}", criteria);
+        return ResponseEntity.ok().body(addressTypeQueryService.countByCriteria(criteria));
     }
 
     /**

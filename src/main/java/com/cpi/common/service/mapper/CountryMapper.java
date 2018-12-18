@@ -12,8 +12,6 @@ import org.mapstruct.*;
 public interface CountryMapper extends EntityMapper<CountryDTO, Country> {
 
 
-    @Mapping(target = "ports", ignore = true)
-    Country toEntity(CountryDTO countryDTO);
 
     default Country fromId(Long id) {
         if (id == null) {

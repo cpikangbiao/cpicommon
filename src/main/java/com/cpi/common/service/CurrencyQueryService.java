@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.Currency;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.CurrencyRepository;
 import com.cpi.common.service.dto.CurrencyCriteria;
-
 import com.cpi.common.service.dto.CurrencyDTO;
 import com.cpi.common.service.mapper.CurrencyMapper;
 
@@ -68,6 +69,18 @@ public class CurrencyQueryService extends QueryService<Currency> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CurrencyCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Currency> specification = createSpecification(criteria);
+        return currencyRepository.count(specification);
+    }
+
+    /**
      * Function to convert CurrencyCriteria to a {@link Specification}
      */
     private Specification<Currency> createSpecification(CurrencyCriteria criteria) {
@@ -97,5 +110,4 @@ public class CurrencyQueryService extends QueryService<Currency> {
         }
         return specification;
     }
-
 }

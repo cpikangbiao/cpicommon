@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.AddressType;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.AddressTypeRepository;
 import com.cpi.common.service.dto.AddressTypeCriteria;
-
 import com.cpi.common.service.dto.AddressTypeDTO;
 import com.cpi.common.service.mapper.AddressTypeMapper;
 
@@ -68,6 +69,18 @@ public class AddressTypeQueryService extends QueryService<AddressType> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(AddressTypeCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<AddressType> specification = createSpecification(criteria);
+        return addressTypeRepository.count(specification);
+    }
+
+    /**
      * Function to convert AddressTypeCriteria to a {@link Specification}
      */
     private Specification<AddressType> createSpecification(AddressTypeCriteria criteria) {
@@ -88,5 +101,4 @@ public class AddressTypeQueryService extends QueryService<AddressType> {
         }
         return specification;
     }
-
 }

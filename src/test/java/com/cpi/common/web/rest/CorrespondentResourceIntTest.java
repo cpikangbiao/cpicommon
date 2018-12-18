@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -69,10 +70,8 @@ public class CorrespondentResourceIntTest {
     @Autowired
     private CorrespondentRepository correspondentRepository;
 
-
     @Autowired
     private CorrespondentMapper correspondentMapper;
-    
 
     @Autowired
     private CorrespondentService correspondentService;
@@ -92,6 +91,9 @@ public class CorrespondentResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCorrespondentMockMvc;
 
     private Correspondent correspondent;
@@ -104,7 +106,8 @@ public class CorrespondentResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -216,7 +219,6 @@ public class CorrespondentResourceIntTest {
             .andExpect(jsonPath("$.[*].webSite").value(hasItem(DEFAULT_WEB_SITE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getCorrespondent() throws Exception {
@@ -521,6 +523,12 @@ public class CorrespondentResourceIntTest {
             .andExpect(jsonPath("$.[*].telephoneOffice").value(hasItem(DEFAULT_TELEPHONE_OFFICE.toString())))
             .andExpect(jsonPath("$.[*].telephoneAlternate").value(hasItem(DEFAULT_TELEPHONE_ALTERNATE.toString())))
             .andExpect(jsonPath("$.[*].webSite").value(hasItem(DEFAULT_WEB_SITE.toString())));
+
+        // Check, that the count call also returns 1
+        restCorrespondentMockMvc.perform(get("/api/correspondents/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -532,7 +540,14 @@ public class CorrespondentResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCorrespondentMockMvc.perform(get("/api/correspondents/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -588,7 +603,7 @@ public class CorrespondentResourceIntTest {
         // Create the Correspondent
         CorrespondentDTO correspondentDTO = correspondentMapper.toDto(correspondent);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCorrespondentMockMvc.perform(put("/api/correspondents")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(correspondentDTO)))

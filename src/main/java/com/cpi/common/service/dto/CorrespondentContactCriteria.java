@@ -1,6 +1,7 @@
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the CorrespondentContact entity. This class is used in CorrespondentContactResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class CorrespondentContactCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -39,9 +35,6 @@ public class CorrespondentContactCriteria implements Serializable {
     private StringFilter webSite;
 
     private LongFilter correspondentId;
-
-    public CorrespondentContactCriteria() {
-    }
 
     public LongFilter getId() {
         return id;
@@ -97,6 +90,39 @@ public class CorrespondentContactCriteria implements Serializable {
 
     public void setCorrespondentId(LongFilter correspondentId) {
         this.correspondentId = correspondentId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final CorrespondentContactCriteria that = (CorrespondentContactCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(correspondentContactName, that.correspondentContactName) &&
+            Objects.equals(telephoneOffice, that.telephoneOffice) &&
+            Objects.equals(telephone, that.telephone) &&
+            Objects.equals(eMail, that.eMail) &&
+            Objects.equals(webSite, that.webSite) &&
+            Objects.equals(correspondentId, that.correspondentId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        correspondentContactName,
+        telephoneOffice,
+        telephone,
+        eMail,
+        webSite,
+        correspondentId
+        );
     }
 
     @Override

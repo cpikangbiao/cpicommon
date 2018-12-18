@@ -2,6 +2,8 @@ package com.cpi.common.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import com.cpi.common.domain.Vessel;
 import com.cpi.common.domain.*; // for static metamodels
 import com.cpi.common.repository.VesselRepository;
 import com.cpi.common.service.dto.VesselCriteria;
-
 import com.cpi.common.service.dto.VesselDTO;
 import com.cpi.common.service.mapper.VesselMapper;
 
@@ -65,6 +66,18 @@ public class VesselQueryService extends QueryService<Vessel> {
         final Specification<Vessel> specification = createSpecification(criteria);
         return vesselRepository.findAll(specification, page)
             .map(vesselMapper::toDto);
+    }
+
+    /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(VesselCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Vessel> specification = createSpecification(criteria);
+        return vesselRepository.count(specification);
     }
 
     /**
@@ -137,22 +150,26 @@ public class VesselQueryService extends QueryService<Vessel> {
                 specification = specification.and(buildStringSpecification(criteria.getImoNumber(), Vessel_.imoNumber));
             }
             if (criteria.getVesselCountryId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getVesselCountryId(), Vessel_.vesselCountry, Country_.id));
+                specification = specification.and(buildSpecification(criteria.getVesselCountryId(),
+                    root -> root.join(Vessel_.vesselCountry, JoinType.LEFT).get(Country_.id)));
             }
             if (criteria.getVesselCurrencyId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getVesselCurrencyId(), Vessel_.vesselCurrency, Currency_.id));
+                specification = specification.and(buildSpecification(criteria.getVesselCurrencyId(),
+                    root -> root.join(Vessel_.vesselCurrency, JoinType.LEFT).get(Currency_.id)));
             }
             if (criteria.getVesselTypeId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getVesselTypeId(), Vessel_.vesselType, VesselType_.id));
+                specification = specification.and(buildSpecification(criteria.getVesselTypeId(),
+                    root -> root.join(Vessel_.vesselType, JoinType.LEFT).get(VesselType_.id)));
             }
             if (criteria.getVesselOwnerCompanyId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getVesselOwnerCompanyId(), Vessel_.vesselOwnerCompany, Company_.id));
+                specification = specification.and(buildSpecification(criteria.getVesselOwnerCompanyId(),
+                    root -> root.join(Vessel_.vesselOwnerCompany, JoinType.LEFT).get(Company_.id)));
             }
             if (criteria.getRegistedPortId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getRegistedPortId(), Vessel_.registedPort, Port_.id));
+                specification = specification.and(buildSpecification(criteria.getRegistedPortId(),
+                    root -> root.join(Vessel_.registedPort, JoinType.LEFT).get(Port_.id)));
             }
         }
         return specification;
     }
-
 }

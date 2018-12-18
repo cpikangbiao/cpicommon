@@ -34,7 +34,7 @@ public class CurrencyRateResource {
 
     private final Logger log = LoggerFactory.getLogger(CurrencyRateResource.class);
 
-    private static final String ENTITY_NAME = "currencyRate";
+    private static final String ENTITY_NAME = "cpicommonCurrencyRate";
 
     private final CurrencyRateService currencyRateService;
 
@@ -100,7 +100,20 @@ public class CurrencyRateResource {
         log.debug("REST request to get CurrencyRates by criteria: {}", criteria);
         Page<CurrencyRateDTO> page = currencyRateQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/currency-rates");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /currency-rates/count : count all the currencyRates.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/currency-rates/count")
+    @Timed
+    public ResponseEntity<Long> countCurrencyRates(CurrencyRateCriteria criteria) {
+        log.debug("REST request to count CurrencyRates by criteria: {}", criteria);
+        return ResponseEntity.ok().body(currencyRateQueryService.countByCriteria(criteria));
     }
 
     /**

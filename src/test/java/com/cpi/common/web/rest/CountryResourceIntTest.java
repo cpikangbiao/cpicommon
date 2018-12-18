@@ -5,7 +5,6 @@ import com.cpi.common.CpicommonApp;
 import com.cpi.common.config.SecurityBeanOverrideConfiguration;
 
 import com.cpi.common.domain.Country;
-import com.cpi.common.domain.Port;
 import com.cpi.common.repository.CountryRepository;
 import com.cpi.common.service.CountryService;
 import com.cpi.common.service.dto.CountryDTO;
@@ -27,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -62,10 +62,8 @@ public class CountryResourceIntTest {
     @Autowired
     private CountryRepository countryRepository;
 
-
     @Autowired
     private CountryMapper countryMapper;
-    
 
     @Autowired
     private CountryService countryService;
@@ -85,6 +83,9 @@ public class CountryResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCountryMockMvc;
 
     private Country country;
@@ -97,7 +98,8 @@ public class CountryResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -217,7 +219,6 @@ public class CountryResourceIntTest {
             .andExpect(jsonPath("$.[*].dialCode").value(hasItem(DEFAULT_DIAL_CODE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getCountry() throws Exception {
@@ -390,25 +391,6 @@ public class CountryResourceIntTest {
         // Get all the countryList where dialCode is null
         defaultCountryShouldNotBeFound("dialCode.specified=false");
     }
-
-    @Test
-    @Transactional
-    public void getAllCountriesByPortsIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Port ports = PortResourceIntTest.createEntity(em);
-        em.persist(ports);
-        em.flush();
-        country.addPorts(ports);
-        countryRepository.saveAndFlush(country);
-        Long portsId = ports.getId();
-
-        // Get all the countryList where ports equals to portsId
-        defaultCountryShouldBeFound("portsId.equals=" + portsId);
-
-        // Get all the countryList where ports equals to portsId + 1
-        defaultCountryShouldNotBeFound("portsId.equals=" + (portsId + 1));
-    }
-
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -421,6 +403,12 @@ public class CountryResourceIntTest {
             .andExpect(jsonPath("$.[*].countryNameAbbr").value(hasItem(DEFAULT_COUNTRY_NAME_ABBR.toString())))
             .andExpect(jsonPath("$.[*].countryNameChinese").value(hasItem(DEFAULT_COUNTRY_NAME_CHINESE.toString())))
             .andExpect(jsonPath("$.[*].dialCode").value(hasItem(DEFAULT_DIAL_CODE.toString())));
+
+        // Check, that the count call also returns 1
+        restCountryMockMvc.perform(get("/api/countries/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -432,7 +420,14 @@ public class CountryResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCountryMockMvc.perform(get("/api/countries/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
+
 
     @Test
     @Transactional
@@ -484,7 +479,7 @@ public class CountryResourceIntTest {
         // Create the Country
         CountryDTO countryDTO = countryMapper.toDto(country);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCountryMockMvc.perform(put("/api/countries")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(countryDTO)))

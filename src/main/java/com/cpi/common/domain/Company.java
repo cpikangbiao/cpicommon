@@ -39,8 +39,7 @@ public class Company implements Serializable {
     @Column(name = "remark")
     private String remark;
 
-    @OneToOne
-    @JoinColumn(unique = true)
+    @OneToOne    @JoinColumn(unique = true)
     private Country country;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
