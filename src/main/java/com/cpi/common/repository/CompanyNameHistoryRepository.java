@@ -28,6 +28,9 @@ import com.cpi.common.domain.CompanyNameHistory;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.List;
+
 
 /**
  * Spring Data  repository for the CompanyNameHistory entity.
@@ -36,4 +39,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyNameHistoryRepository extends JpaRepository<CompanyNameHistory, Long>, JpaSpecificationExecutor<CompanyNameHistory> {
 
+    CompanyNameHistory findFirstByCompanyIdAndEndDateAfterOrderByEndDateAsc(Long companyId, Instant currencyDate);
+
+    List<CompanyNameHistory> findAllByCompanyIdOrderByEndDateAsc(Long companyId);
 }

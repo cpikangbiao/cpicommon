@@ -24,9 +24,13 @@
 
 package com.cpi.common.repository;
 
+import com.cpi.common.domain.CompanyNameHistory;
 import com.cpi.common.domain.VesselNameHistory;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
+
+import java.time.Instant;
+import java.util.List;
 
 
 /**
@@ -36,4 +40,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VesselNameHistoryRepository extends JpaRepository<VesselNameHistory, Long>, JpaSpecificationExecutor<VesselNameHistory> {
 
+    VesselNameHistory findFirstByVesselIdAndEndDateAfterOrderByEndDateAsc(Long vesselId, Instant currencyDate);
+
+    List<VesselNameHistory> findAllByVesselIdOrderByEndDateDesc(Long vesselId);
 }
