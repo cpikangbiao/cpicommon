@@ -24,6 +24,7 @@
 
 package com.cpi.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -55,7 +56,8 @@ public class Port implements Serializable {
     @Column(name = "port_name_chinese")
     private String portNameChinese;
 
-    @OneToOne    @JoinColumn(unique = true)
+    @ManyToOne
+    @JsonIgnoreProperties("")
     private Country country;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

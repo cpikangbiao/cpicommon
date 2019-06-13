@@ -24,11 +24,11 @@ entity CurrencyRate {
     currencyRate  Double required,
 }
 
-relationship OneToOne {
+relationship ManyToOne {
 	CurrencyRate{currency(nameAbbre)} to Currency
 }
 
-relationship OneToOne {
+relationship ManyToOne {
 	Port{country(countryName)} to Country
 }
 

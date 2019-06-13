@@ -64,9 +64,9 @@ public class VesselNameHistoryExtResource {
     @Timed
     public ResponseEntity<VesselNameHistoryDTO> findFitVesselNameByVesselId(
         @RequestParam Long vesselId,
-        @RequestParam Instant speicalTime) {
-        log.debug("REST request to get Fit VesselName by vesselId: {} and Time : {}", vesselId, speicalTime);
-        VesselNameHistoryDTO vesselNameHistory = vesselNameHistoryExtService.findFitVesselNameByVesselId(vesselId, speicalTime);
+        @RequestParam Instant specialTime) {
+        log.debug("REST request to get Fit VesselName by vesselId: {} and Time : {}", vesselId, specialTime);
+        VesselNameHistoryDTO vesselNameHistory = vesselNameHistoryExtService.findFitVesselNameByVesselId(vesselId, specialTime);
         return ResponseEntity.ok().body(vesselNameHistory);
     }
 }

@@ -28,6 +28,8 @@ import com.cpi.common.domain.Vessel;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 /**
  * Spring Data  repository for the Vessel entity.
@@ -36,4 +38,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VesselRepository extends JpaRepository<Vessel, Long>, JpaSpecificationExecutor<Vessel> {
 
+    List<Vessel> findAllByVesselNameContainingIgnoreCaseOrImoNumber(String vesselName, String imoNumber);
 }
