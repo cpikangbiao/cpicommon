@@ -1,0 +1,161 @@
+entity Country {
+	countryName String required,
+    countryNameAbbr String required,
+    countryNameChinese String,
+    dialCode String
+}
+
+entity Port {
+	portCode String,
+    portName String,
+    portNameChinese String
+}
+
+entity Currency {
+	fullNameEnglish String required maxlength(100),
+    fullNameChinese String  maxlength(255),
+    countryNameEnglish String required maxlength(255),
+    countryNameChinese String  maxlength(255),
+    nameAbbre String required maxlength(100),
+    currencySort Integer,
+}
+entity CurrencyRate {
+	rateDate LocalDate required,
+    currencyRate  Double required,
+}
+
+relationship ManyToOne {
+	CurrencyRate{currency(nameAbbre)} to Currency
+}
+
+relationship ManyToOne {
+	Port{country(countryName)} to Country
+}
+
+entity Company {
+	companyCode String required maxlength(10),
+	companyName String required,
+    companyNameChinese String,
+    remark TextBlob
+}
+
+relationship OneToOne {
+	Company{country(countryName)} to Country
+}
+
+entity CompanyNameHistory {
+		 updateTime Instant,
+         updateUser Long,
+         companyName String,
+         companyChineseName String,
+		 startDate Instant,
+		 endDate Instant,
+}
+relationship ManyToOne {
+         CompanyNameHistory{company(companyName)} to Company
+}
+
+entity Vessel {
+		 vesselCode String,
+         vesselName String,
+         vesselChineseName String,
+		 gtr Double required,
+		 wrt Double,
+		 buildLocation String,
+		 buildYear String minlength(4) maxlength(4),
+		 foc String maxlength(20),
+		 dwt Double,
+		 hullHmAmount Double,
+		 hullHmValue Double,
+		 hullIvAmount Double,
+		 hullIvValue Double,
+		 hullWarAmount Double,
+		 hullWarValue Double,
+		 vesselSize String,
+		 line String maxlength(20),
+		 deeper Double,
+		 callSign String maxlength(15),
+		 imoNumber String maxlength(10),
+}
+
+entity VesselNameHistory {
+		 updateTime Instant,
+         updateUser Long,
+         vesselName String,
+         vesselChineseName String,
+		 startDate Instant,
+		 endDate Instant,
+}
+relationship ManyToOne {
+         VesselNameHistory{vessel(vesselName)} to Vessel
+}
+
+
+entity VesselType {
+         VesselTypeName String required,
+		 sortNum Integer required,
+}
+
+entity ClassificationSociety {
+         ClassificationSocietyName String required,
+         ClassificationSocietyNameAbbr String required,
+		 sortNum Integer required,
+}
+
+relationship ManyToOne {
+		 Vessel{VesselCountry(countryName)} to Country
+}
+
+relationship ManyToOne {
+		 Vessel{VesselCurrency(nameAbbre)} to Currency
+}
+
+relationship ManyToOne {
+         Vessel{VesselType(VesselTypeName)} to VesselType
+}
+
+relationship ManyToOne {
+         Vessel{VesselOwnerCompany(companyName)} to Company
+}
+
+relationship ManyToOne {
+         Vessel{registedPort(portName)} to Port
+}
+
+entity AddressType {
+	sortNum Integer  ,
+	addressTypeName String required ,
+	addressTypeNameChinese String  ,
+}
+
+entity Address {
+	name String ,
+	building String ,
+	street String ,
+	postbox String ,
+	zip String ,
+	city String ,
+}
+
+relationship ManyToOne {
+	Address{company(companyName)} to Company
+}
+
+relationship ManyToOne {
+	Address{addressType(addressTypeName)} to AddressType
+}
+
+
+// Set pagination options
+//paginate PartnerType with infinite-scroll
+paginate * with pagination
+
+dto * with mapstruct
+
+//Set service options to all except few
+service * with serviceImpl //except PartnerType
+
+filter * //except PartnerType
+
+
+microservice * with cpicommon
