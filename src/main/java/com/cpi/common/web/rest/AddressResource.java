@@ -1,44 +1,23 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import com.cpi.common.service.AddressService;
 import com.cpi.common.web.rest.errors.BadRequestAlertException;
-import com.cpi.common.web.rest.util.HeaderUtil;
-import com.cpi.common.web.rest.util.PaginationUtil;
 import com.cpi.common.service.dto.AddressDTO;
 import com.cpi.common.service.dto.AddressCriteria;
 import com.cpi.common.service.AddressQueryService;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing Address.
+ * REST controller for managing {@link com.cpi.common.domain.Address}.
  */
 @RestController
 @RequestMapping("/api")
@@ -58,6 +37,9 @@ public class AddressResource {
     private final Logger log = LoggerFactory.getLogger(AddressResource.class);
 
     private static final String ENTITY_NAME = "cpicommonAddress";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     private final AddressService addressService;
 
@@ -69,14 +51,13 @@ public class AddressResource {
     }
 
     /**
-     * POST  /addresses : Create a new address.
+     * {@code POST  /addresses} : Create a new address.
      *
-     * @param addressDTO the addressDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new addressDTO, or with status 400 (Bad Request) if the address has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param addressDTO the addressDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new addressDTO, or with status {@code 400 (Bad Request)} if the address has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/addresses")
-    @Timed
     public ResponseEntity<AddressDTO> createAddress(@RequestBody AddressDTO addressDTO) throws URISyntaxException {
         log.debug("REST request to save Address : {}", addressDTO);
         if (addressDTO.getId() != null) {
@@ -84,21 +65,20 @@ public class AddressResource {
         }
         AddressDTO result = addressService.save(addressDTO);
         return ResponseEntity.created(new URI("/api/addresses/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /addresses : Updates an existing address.
+     * {@code PUT  /addresses} : Updates an existing address.
      *
-     * @param addressDTO the addressDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated addressDTO,
-     * or with status 400 (Bad Request) if the addressDTO is not valid,
-     * or with status 500 (Internal Server Error) if the addressDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param addressDTO the addressDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated addressDTO,
+     * or with status {@code 400 (Bad Request)} if the addressDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the addressDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/addresses")
-    @Timed
     public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO addressDTO) throws URISyntaxException {
         log.debug("REST request to update Address : {}", addressDTO);
         if (addressDTO.getId() == null) {
@@ -106,47 +86,44 @@ public class AddressResource {
         }
         AddressDTO result = addressService.save(addressDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, addressDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, addressDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /addresses : get all the addresses.
+     * {@code GET  /addresses} : get all the addresses.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
-     * @return the ResponseEntity with status 200 (OK) and the list of addresses in body
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of addresses in body.
      */
     @GetMapping("/addresses")
-    @Timed
-    public ResponseEntity<List<AddressDTO>> getAllAddresses(AddressCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<AddressDTO>> getAllAddresses(AddressCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get Addresses by criteria: {}", criteria);
         Page<AddressDTO> page = addressQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-    * GET  /addresses/count : count all the addresses.
+    * {@code GET  /addresses/count} : count all the addresses.
     *
-    * @param criteria the criterias which the requested entities should match
-    * @return the ResponseEntity with status 200 (OK) and the count in body
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
     @GetMapping("/addresses/count")
-    @Timed
     public ResponseEntity<Long> countAddresses(AddressCriteria criteria) {
         log.debug("REST request to count Addresses by criteria: {}", criteria);
         return ResponseEntity.ok().body(addressQueryService.countByCriteria(criteria));
     }
 
     /**
-     * GET  /addresses/:id : get the "id" address.
+     * {@code GET  /addresses/:id} : get the "id" address.
      *
-     * @param id the id of the addressDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the addressDTO, or with status 404 (Not Found)
+     * @param id the id of the addressDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the addressDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/addresses/{id}")
-    @Timed
     public ResponseEntity<AddressDTO> getAddress(@PathVariable Long id) {
         log.debug("REST request to get Address : {}", id);
         Optional<AddressDTO> addressDTO = addressService.findOne(id);
@@ -154,16 +131,15 @@ public class AddressResource {
     }
 
     /**
-     * DELETE  /addresses/:id : delete the "id" address.
+     * {@code DELETE  /addresses/:id} : delete the "id" address.
      *
-     * @param id the id of the addressDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the addressDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/addresses/{id}")
-    @Timed
     public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
         log.debug("REST request to delete Address : {}", id);
         addressService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }

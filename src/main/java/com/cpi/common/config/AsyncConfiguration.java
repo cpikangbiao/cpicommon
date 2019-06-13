@@ -1,57 +1,31 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.config;
 
 import io.github.jhipster.async.ExceptionHandlingAsyncTaskExecutor;
-import io.github.jhipster.config.JHipsterProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
+import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.*;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 @Configuration
 @EnableAsync
 @EnableScheduling
-public class AsyncConfiguration implements AsyncConfigurer, SchedulingConfigurer {
+public class AsyncConfiguration implements AsyncConfigurer {
 
     private final Logger log = LoggerFactory.getLogger(AsyncConfiguration.class);
 
-    private final JHipsterProperties jHipsterProperties;
+    private final TaskExecutionProperties taskExecutionProperties;
 
-    public AsyncConfiguration(JHipsterProperties jHipsterProperties) {
-        this.jHipsterProperties = jHipsterProperties;
+    public AsyncConfiguration(TaskExecutionProperties taskExecutionProperties) {
+        this.taskExecutionProperties = taskExecutionProperties;
     }
 
     @Override
@@ -59,25 +33,15 @@ public class AsyncConfiguration implements AsyncConfigurer, SchedulingConfigurer
     public Executor getAsyncExecutor() {
         log.debug("Creating Async Task Executor");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(jHipsterProperties.getAsync().getCorePoolSize());
-        executor.setMaxPoolSize(jHipsterProperties.getAsync().getMaxPoolSize());
-        executor.setQueueCapacity(jHipsterProperties.getAsync().getQueueCapacity());
-        executor.setThreadNamePrefix("cpicommon-Executor-");
+        executor.setCorePoolSize(taskExecutionProperties.getPool().getCoreSize());
+        executor.setMaxPoolSize(taskExecutionProperties.getPool().getMaxSize());
+        executor.setQueueCapacity(taskExecutionProperties.getPool().getQueueCapacity());
+        executor.setThreadNamePrefix(taskExecutionProperties.getThreadNamePrefix());
         return new ExceptionHandlingAsyncTaskExecutor(executor);
     }
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncUncaughtExceptionHandler();
-    }
-
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        taskRegistrar.setScheduler(scheduledTaskExecutor());
-    }
-
-    @Bean
-    public Executor scheduledTaskExecutor() {
-        return Executors.newScheduledThreadPool(jHipsterProperties.getAsync().getCorePoolSize());
     }
 }

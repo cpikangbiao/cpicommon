@@ -1,27 +1,3 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.service;
 
 import com.cpi.common.service.dto.AddressDTO;
@@ -32,23 +8,23 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 /**
- * Service Interface for managing Address.
+ * Service Interface for managing {@link com.cpi.common.domain.Address}.
  */
 public interface AddressService {
 
     /**
      * Save a address.
      *
-     * @param addressDTO the entity to save
-     * @return the persisted entity
+     * @param addressDTO the entity to save.
+     * @return the persisted entity.
      */
     AddressDTO save(AddressDTO addressDTO);
 
     /**
      * Get all the addresses.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     Page<AddressDTO> findAll(Pageable pageable);
 
@@ -56,15 +32,15 @@ public interface AddressService {
     /**
      * Get the "id" address.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     Optional<AddressDTO> findOne(Long id);
 
     /**
      * Delete the "id" address.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     void delete(Long id);
 }

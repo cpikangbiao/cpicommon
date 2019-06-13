@@ -1,27 +1,3 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.security.oauth2;
 
 import com.cpi.common.config.oauth2.OAuth2Properties;
@@ -41,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 /**
- * Client fetching the public key from UAA to create a SignatureVerifier.
+ * Client fetching the public key from UAA to create a {@link SignatureVerifier}.
  */
 @Component
 public class UaaSignatureVerifierClient implements OAuth2SignatureVerifierClient {
@@ -60,7 +36,7 @@ public class UaaSignatureVerifierClient implements OAuth2SignatureVerifierClient
     /**
      * Fetches the public key from the UAA.
      *
-     * @return the public key used to verify JWT tokens; or null.
+     * @return the public key used to verify JWT tokens; or {@code null}.
      */
     @Override
     public SignatureVerifier getSignatureVerifier() throws Exception {
@@ -76,7 +52,11 @@ public class UaaSignatureVerifierClient implements OAuth2SignatureVerifierClient
         }
     }
 
-    /** Returns the configured endpoint URI to retrieve the public key. */
+    /**
+     * Returns the configured endpoint URI to retrieve the public key.
+     *
+     * @return the configured endpoint URI to retrieve the public key.
+     */
     private String getPublicKeyEndpoint() {
         String tokenEndpointUrl = oAuth2Properties.getSignatureVerification().getPublicKeyEndpointUri();
         if (tokenEndpointUrl == null) {

@@ -1,31 +1,8 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import io.github.jhipster.service.Criteria;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -35,14 +12,15 @@ import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
 /**
- * Criteria class for the CorrespondentContact entity. This class is used in CorrespondentContactResource to
- * receive all the possible filtering options from the Http GET request parameters.
- * For example the following could be a valid requests:
- * <code> /correspondent-contacts?id.greaterThan=5&amp;attr1.contains=something&amp;attr2.specified=false</code>
+ * Criteria class for the {@link com.cpi.common.domain.CorrespondentContact} entity. This class is used
+ * in {@link com.cpi.common.web.rest.CorrespondentContactResource} to receive all the possible filtering options from
+ * the Http GET request parameters.
+ * For example the following could be a valid request:
+ * {@code /correspondent-contacts?id.greaterThan=5&attr1.contains=something&attr2.specified=false}
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
-public class CorrespondentContactCriteria implements Serializable {
+public class CorrespondentContactCriteria implements Serializable, Criteria {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,6 +37,24 @@ public class CorrespondentContactCriteria implements Serializable {
     private StringFilter webSite;
 
     private LongFilter correspondentId;
+
+    public CorrespondentContactCriteria(){
+    }
+
+    public CorrespondentContactCriteria(CorrespondentContactCriteria other){
+        this.id = other.id == null ? null : other.id.copy();
+        this.correspondentContactName = other.correspondentContactName == null ? null : other.correspondentContactName.copy();
+        this.telephoneOffice = other.telephoneOffice == null ? null : other.telephoneOffice.copy();
+        this.telephone = other.telephone == null ? null : other.telephone.copy();
+        this.eMail = other.eMail == null ? null : other.eMail.copy();
+        this.webSite = other.webSite == null ? null : other.webSite.copy();
+        this.correspondentId = other.correspondentId == null ? null : other.correspondentId.copy();
+    }
+
+    @Override
+    public CorrespondentContactCriteria copy() {
+        return new CorrespondentContactCriteria(this);
+    }
 
     public LongFilter getId() {
         return id;

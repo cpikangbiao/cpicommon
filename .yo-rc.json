@@ -4,7 +4,7 @@
       "packageName": "com.cpi.common",
       "nativeLanguage": "en"
     },
-    "jhipsterVersion": "5.7.1",
+    "jhipsterVersion": "6.1.0",
     "baseName": "cpicommon",
     "packageName": "com.cpi.common",
     "packageFolder": "com/cpi/common",
@@ -36,6 +36,8 @@
     "clientPackageManager": "yarn",
     "skipClient": true,
     "skipUserManagement": true,
-    "otherModules": []
+    "otherModules": [],
+    "entitySuffix": "",
+    "dtoSuffix": "DTO"
   }
 }

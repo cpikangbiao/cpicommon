@@ -1,31 +1,8 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import io.github.jhipster.service.Criteria;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -35,14 +12,15 @@ import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
 /**
- * Criteria class for the Vessel entity. This class is used in VesselResource to
- * receive all the possible filtering options from the Http GET request parameters.
- * For example the following could be a valid requests:
- * <code> /vessels?id.greaterThan=5&amp;attr1.contains=something&amp;attr2.specified=false</code>
+ * Criteria class for the {@link com.cpi.common.domain.Vessel} entity. This class is used
+ * in {@link com.cpi.common.web.rest.VesselResource} to receive all the possible filtering options from
+ * the Http GET request parameters.
+ * For example the following could be a valid request:
+ * {@code /vessels?id.greaterThan=5&attr1.contains=something&attr2.specified=false}
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
-public class VesselCriteria implements Serializable {
+public class VesselCriteria implements Serializable, Criteria {
 
     private static final long serialVersionUID = 1L;
 
@@ -97,6 +75,43 @@ public class VesselCriteria implements Serializable {
     private LongFilter vesselOwnerCompanyId;
 
     private LongFilter registedPortId;
+
+    public VesselCriteria(){
+    }
+
+    public VesselCriteria(VesselCriteria other){
+        this.id = other.id == null ? null : other.id.copy();
+        this.vesselCode = other.vesselCode == null ? null : other.vesselCode.copy();
+        this.vesselName = other.vesselName == null ? null : other.vesselName.copy();
+        this.vesselChineseName = other.vesselChineseName == null ? null : other.vesselChineseName.copy();
+        this.gtr = other.gtr == null ? null : other.gtr.copy();
+        this.wrt = other.wrt == null ? null : other.wrt.copy();
+        this.buildLocation = other.buildLocation == null ? null : other.buildLocation.copy();
+        this.buildYear = other.buildYear == null ? null : other.buildYear.copy();
+        this.foc = other.foc == null ? null : other.foc.copy();
+        this.dwt = other.dwt == null ? null : other.dwt.copy();
+        this.hullHmAmount = other.hullHmAmount == null ? null : other.hullHmAmount.copy();
+        this.hullHmValue = other.hullHmValue == null ? null : other.hullHmValue.copy();
+        this.hullIvAmount = other.hullIvAmount == null ? null : other.hullIvAmount.copy();
+        this.hullIvValue = other.hullIvValue == null ? null : other.hullIvValue.copy();
+        this.hullWarAmount = other.hullWarAmount == null ? null : other.hullWarAmount.copy();
+        this.hullWarValue = other.hullWarValue == null ? null : other.hullWarValue.copy();
+        this.vesselSize = other.vesselSize == null ? null : other.vesselSize.copy();
+        this.line = other.line == null ? null : other.line.copy();
+        this.deeper = other.deeper == null ? null : other.deeper.copy();
+        this.callSign = other.callSign == null ? null : other.callSign.copy();
+        this.imoNumber = other.imoNumber == null ? null : other.imoNumber.copy();
+        this.vesselCountryId = other.vesselCountryId == null ? null : other.vesselCountryId.copy();
+        this.vesselCurrencyId = other.vesselCurrencyId == null ? null : other.vesselCurrencyId.copy();
+        this.vesselTypeId = other.vesselTypeId == null ? null : other.vesselTypeId.copy();
+        this.vesselOwnerCompanyId = other.vesselOwnerCompanyId == null ? null : other.vesselOwnerCompanyId.copy();
+        this.registedPortId = other.registedPortId == null ? null : other.registedPortId.copy();
+    }
+
+    @Override
+    public VesselCriteria copy() {
+        return new VesselCriteria(this);
+    }
 
     public LongFilter getId() {
         return id;

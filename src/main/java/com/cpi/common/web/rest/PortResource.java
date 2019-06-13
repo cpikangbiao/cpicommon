@@ -1,44 +1,23 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import com.cpi.common.service.PortService;
 import com.cpi.common.web.rest.errors.BadRequestAlertException;
-import com.cpi.common.web.rest.util.HeaderUtil;
-import com.cpi.common.web.rest.util.PaginationUtil;
 import com.cpi.common.service.dto.PortDTO;
 import com.cpi.common.service.dto.PortCriteria;
 import com.cpi.common.service.PortQueryService;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing Port.
+ * REST controller for managing {@link com.cpi.common.domain.Port}.
  */
 @RestController
 @RequestMapping("/api")
@@ -58,6 +37,9 @@ public class PortResource {
     private final Logger log = LoggerFactory.getLogger(PortResource.class);
 
     private static final String ENTITY_NAME = "cpicommonPort";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     private final PortService portService;
 
@@ -69,14 +51,13 @@ public class PortResource {
     }
 
     /**
-     * POST  /ports : Create a new port.
+     * {@code POST  /ports} : Create a new port.
      *
-     * @param portDTO the portDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new portDTO, or with status 400 (Bad Request) if the port has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param portDTO the portDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new portDTO, or with status {@code 400 (Bad Request)} if the port has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ports")
-    @Timed
     public ResponseEntity<PortDTO> createPort(@RequestBody PortDTO portDTO) throws URISyntaxException {
         log.debug("REST request to save Port : {}", portDTO);
         if (portDTO.getId() != null) {
@@ -84,21 +65,20 @@ public class PortResource {
         }
         PortDTO result = portService.save(portDTO);
         return ResponseEntity.created(new URI("/api/ports/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /ports : Updates an existing port.
+     * {@code PUT  /ports} : Updates an existing port.
      *
-     * @param portDTO the portDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated portDTO,
-     * or with status 400 (Bad Request) if the portDTO is not valid,
-     * or with status 500 (Internal Server Error) if the portDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param portDTO the portDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated portDTO,
+     * or with status {@code 400 (Bad Request)} if the portDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the portDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/ports")
-    @Timed
     public ResponseEntity<PortDTO> updatePort(@RequestBody PortDTO portDTO) throws URISyntaxException {
         log.debug("REST request to update Port : {}", portDTO);
         if (portDTO.getId() == null) {
@@ -106,47 +86,44 @@ public class PortResource {
         }
         PortDTO result = portService.save(portDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, portDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, portDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /ports : get all the ports.
+     * {@code GET  /ports} : get all the ports.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
-     * @return the ResponseEntity with status 200 (OK) and the list of ports in body
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ports in body.
      */
     @GetMapping("/ports")
-    @Timed
-    public ResponseEntity<List<PortDTO>> getAllPorts(PortCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<PortDTO>> getAllPorts(PortCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get Ports by criteria: {}", criteria);
         Page<PortDTO> page = portQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ports");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-    * GET  /ports/count : count all the ports.
+    * {@code GET  /ports/count} : count all the ports.
     *
-    * @param criteria the criterias which the requested entities should match
-    * @return the ResponseEntity with status 200 (OK) and the count in body
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
     @GetMapping("/ports/count")
-    @Timed
     public ResponseEntity<Long> countPorts(PortCriteria criteria) {
         log.debug("REST request to count Ports by criteria: {}", criteria);
         return ResponseEntity.ok().body(portQueryService.countByCriteria(criteria));
     }
 
     /**
-     * GET  /ports/:id : get the "id" port.
+     * {@code GET  /ports/:id} : get the "id" port.
      *
-     * @param id the id of the portDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the portDTO, or with status 404 (Not Found)
+     * @param id the id of the portDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the portDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/ports/{id}")
-    @Timed
     public ResponseEntity<PortDTO> getPort(@PathVariable Long id) {
         log.debug("REST request to get Port : {}", id);
         Optional<PortDTO> portDTO = portService.findOne(id);
@@ -154,16 +131,15 @@ public class PortResource {
     }
 
     /**
-     * DELETE  /ports/:id : delete the "id" port.
+     * {@code DELETE  /ports/:id} : delete the "id" port.
      *
-     * @param id the id of the portDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the portDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/ports/{id}")
-    @Timed
     public ResponseEntity<Void> deletePort(@PathVariable Long id) {
         log.debug("REST request to delete Port : {}", id);
         portService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }

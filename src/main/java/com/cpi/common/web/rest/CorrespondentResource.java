@@ -1,44 +1,23 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import com.cpi.common.service.CorrespondentService;
 import com.cpi.common.web.rest.errors.BadRequestAlertException;
-import com.cpi.common.web.rest.util.HeaderUtil;
-import com.cpi.common.web.rest.util.PaginationUtil;
 import com.cpi.common.service.dto.CorrespondentDTO;
 import com.cpi.common.service.dto.CorrespondentCriteria;
 import com.cpi.common.service.CorrespondentQueryService;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing Correspondent.
+ * REST controller for managing {@link com.cpi.common.domain.Correspondent}.
  */
 @RestController
 @RequestMapping("/api")
@@ -59,6 +38,9 @@ public class CorrespondentResource {
     private final Logger log = LoggerFactory.getLogger(CorrespondentResource.class);
 
     private static final String ENTITY_NAME = "cpicommonCorrespondent";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     private final CorrespondentService correspondentService;
 
@@ -70,14 +52,13 @@ public class CorrespondentResource {
     }
 
     /**
-     * POST  /correspondents : Create a new correspondent.
+     * {@code POST  /correspondents} : Create a new correspondent.
      *
-     * @param correspondentDTO the correspondentDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new correspondentDTO, or with status 400 (Bad Request) if the correspondent has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param correspondentDTO the correspondentDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new correspondentDTO, or with status {@code 400 (Bad Request)} if the correspondent has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/correspondents")
-    @Timed
     public ResponseEntity<CorrespondentDTO> createCorrespondent(@Valid @RequestBody CorrespondentDTO correspondentDTO) throws URISyntaxException {
         log.debug("REST request to save Correspondent : {}", correspondentDTO);
         if (correspondentDTO.getId() != null) {
@@ -85,21 +66,20 @@ public class CorrespondentResource {
         }
         CorrespondentDTO result = correspondentService.save(correspondentDTO);
         return ResponseEntity.created(new URI("/api/correspondents/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /correspondents : Updates an existing correspondent.
+     * {@code PUT  /correspondents} : Updates an existing correspondent.
      *
-     * @param correspondentDTO the correspondentDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated correspondentDTO,
-     * or with status 400 (Bad Request) if the correspondentDTO is not valid,
-     * or with status 500 (Internal Server Error) if the correspondentDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param correspondentDTO the correspondentDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated correspondentDTO,
+     * or with status {@code 400 (Bad Request)} if the correspondentDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the correspondentDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/correspondents")
-    @Timed
     public ResponseEntity<CorrespondentDTO> updateCorrespondent(@Valid @RequestBody CorrespondentDTO correspondentDTO) throws URISyntaxException {
         log.debug("REST request to update Correspondent : {}", correspondentDTO);
         if (correspondentDTO.getId() == null) {
@@ -107,47 +87,44 @@ public class CorrespondentResource {
         }
         CorrespondentDTO result = correspondentService.save(correspondentDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, correspondentDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, correspondentDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /correspondents : get all the correspondents.
+     * {@code GET  /correspondents} : get all the correspondents.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
-     * @return the ResponseEntity with status 200 (OK) and the list of correspondents in body
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of correspondents in body.
      */
     @GetMapping("/correspondents")
-    @Timed
-    public ResponseEntity<List<CorrespondentDTO>> getAllCorrespondents(CorrespondentCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<CorrespondentDTO>> getAllCorrespondents(CorrespondentCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get Correspondents by criteria: {}", criteria);
         Page<CorrespondentDTO> page = correspondentQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/correspondents");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-    * GET  /correspondents/count : count all the correspondents.
+    * {@code GET  /correspondents/count} : count all the correspondents.
     *
-    * @param criteria the criterias which the requested entities should match
-    * @return the ResponseEntity with status 200 (OK) and the count in body
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
     @GetMapping("/correspondents/count")
-    @Timed
     public ResponseEntity<Long> countCorrespondents(CorrespondentCriteria criteria) {
         log.debug("REST request to count Correspondents by criteria: {}", criteria);
         return ResponseEntity.ok().body(correspondentQueryService.countByCriteria(criteria));
     }
 
     /**
-     * GET  /correspondents/:id : get the "id" correspondent.
+     * {@code GET  /correspondents/:id} : get the "id" correspondent.
      *
-     * @param id the id of the correspondentDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the correspondentDTO, or with status 404 (Not Found)
+     * @param id the id of the correspondentDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the correspondentDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/correspondents/{id}")
-    @Timed
     public ResponseEntity<CorrespondentDTO> getCorrespondent(@PathVariable Long id) {
         log.debug("REST request to get Correspondent : {}", id);
         Optional<CorrespondentDTO> correspondentDTO = correspondentService.findOne(id);
@@ -155,16 +132,15 @@ public class CorrespondentResource {
     }
 
     /**
-     * DELETE  /correspondents/:id : delete the "id" correspondent.
+     * {@code DELETE  /correspondents/:id} : delete the "id" correspondent.
      *
-     * @param id the id of the correspondentDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the correspondentDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/correspondents/{id}")
-    @Timed
     public ResponseEntity<Void> deleteCorrespondent(@PathVariable Long id) {
         log.debug("REST request to delete Correspondent : {}", id);
         correspondentService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }

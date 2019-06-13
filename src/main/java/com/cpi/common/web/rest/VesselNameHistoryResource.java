@@ -1,44 +1,23 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import com.cpi.common.service.VesselNameHistoryService;
 import com.cpi.common.web.rest.errors.BadRequestAlertException;
-import com.cpi.common.web.rest.util.HeaderUtil;
-import com.cpi.common.web.rest.util.PaginationUtil;
 import com.cpi.common.service.dto.VesselNameHistoryDTO;
 import com.cpi.common.service.dto.VesselNameHistoryCriteria;
 import com.cpi.common.service.VesselNameHistoryQueryService;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing VesselNameHistory.
+ * REST controller for managing {@link com.cpi.common.domain.VesselNameHistory}.
  */
 @RestController
 @RequestMapping("/api")
@@ -58,6 +37,9 @@ public class VesselNameHistoryResource {
     private final Logger log = LoggerFactory.getLogger(VesselNameHistoryResource.class);
 
     private static final String ENTITY_NAME = "cpicommonVesselNameHistory";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     private final VesselNameHistoryService vesselNameHistoryService;
 
@@ -69,14 +51,13 @@ public class VesselNameHistoryResource {
     }
 
     /**
-     * POST  /vessel-name-histories : Create a new vesselNameHistory.
+     * {@code POST  /vessel-name-histories} : Create a new vesselNameHistory.
      *
-     * @param vesselNameHistoryDTO the vesselNameHistoryDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new vesselNameHistoryDTO, or with status 400 (Bad Request) if the vesselNameHistory has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param vesselNameHistoryDTO the vesselNameHistoryDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new vesselNameHistoryDTO, or with status {@code 400 (Bad Request)} if the vesselNameHistory has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/vessel-name-histories")
-    @Timed
     public ResponseEntity<VesselNameHistoryDTO> createVesselNameHistory(@RequestBody VesselNameHistoryDTO vesselNameHistoryDTO) throws URISyntaxException {
         log.debug("REST request to save VesselNameHistory : {}", vesselNameHistoryDTO);
         if (vesselNameHistoryDTO.getId() != null) {
@@ -84,21 +65,20 @@ public class VesselNameHistoryResource {
         }
         VesselNameHistoryDTO result = vesselNameHistoryService.save(vesselNameHistoryDTO);
         return ResponseEntity.created(new URI("/api/vessel-name-histories/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /vessel-name-histories : Updates an existing vesselNameHistory.
+     * {@code PUT  /vessel-name-histories} : Updates an existing vesselNameHistory.
      *
-     * @param vesselNameHistoryDTO the vesselNameHistoryDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated vesselNameHistoryDTO,
-     * or with status 400 (Bad Request) if the vesselNameHistoryDTO is not valid,
-     * or with status 500 (Internal Server Error) if the vesselNameHistoryDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param vesselNameHistoryDTO the vesselNameHistoryDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated vesselNameHistoryDTO,
+     * or with status {@code 400 (Bad Request)} if the vesselNameHistoryDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the vesselNameHistoryDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/vessel-name-histories")
-    @Timed
     public ResponseEntity<VesselNameHistoryDTO> updateVesselNameHistory(@RequestBody VesselNameHistoryDTO vesselNameHistoryDTO) throws URISyntaxException {
         log.debug("REST request to update VesselNameHistory : {}", vesselNameHistoryDTO);
         if (vesselNameHistoryDTO.getId() == null) {
@@ -106,47 +86,44 @@ public class VesselNameHistoryResource {
         }
         VesselNameHistoryDTO result = vesselNameHistoryService.save(vesselNameHistoryDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, vesselNameHistoryDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, vesselNameHistoryDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /vessel-name-histories : get all the vesselNameHistories.
+     * {@code GET  /vessel-name-histories} : get all the vesselNameHistories.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
-     * @return the ResponseEntity with status 200 (OK) and the list of vesselNameHistories in body
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of vesselNameHistories in body.
      */
     @GetMapping("/vessel-name-histories")
-    @Timed
-    public ResponseEntity<List<VesselNameHistoryDTO>> getAllVesselNameHistories(VesselNameHistoryCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<VesselNameHistoryDTO>> getAllVesselNameHistories(VesselNameHistoryCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get VesselNameHistories by criteria: {}", criteria);
         Page<VesselNameHistoryDTO> page = vesselNameHistoryQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/vessel-name-histories");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-    * GET  /vessel-name-histories/count : count all the vesselNameHistories.
+    * {@code GET  /vessel-name-histories/count} : count all the vesselNameHistories.
     *
-    * @param criteria the criterias which the requested entities should match
-    * @return the ResponseEntity with status 200 (OK) and the count in body
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
     @GetMapping("/vessel-name-histories/count")
-    @Timed
     public ResponseEntity<Long> countVesselNameHistories(VesselNameHistoryCriteria criteria) {
         log.debug("REST request to count VesselNameHistories by criteria: {}", criteria);
         return ResponseEntity.ok().body(vesselNameHistoryQueryService.countByCriteria(criteria));
     }
 
     /**
-     * GET  /vessel-name-histories/:id : get the "id" vesselNameHistory.
+     * {@code GET  /vessel-name-histories/:id} : get the "id" vesselNameHistory.
      *
-     * @param id the id of the vesselNameHistoryDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the vesselNameHistoryDTO, or with status 404 (Not Found)
+     * @param id the id of the vesselNameHistoryDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the vesselNameHistoryDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/vessel-name-histories/{id}")
-    @Timed
     public ResponseEntity<VesselNameHistoryDTO> getVesselNameHistory(@PathVariable Long id) {
         log.debug("REST request to get VesselNameHistory : {}", id);
         Optional<VesselNameHistoryDTO> vesselNameHistoryDTO = vesselNameHistoryService.findOne(id);
@@ -154,16 +131,15 @@ public class VesselNameHistoryResource {
     }
 
     /**
-     * DELETE  /vessel-name-histories/:id : delete the "id" vesselNameHistory.
+     * {@code DELETE  /vessel-name-histories/:id} : delete the "id" vesselNameHistory.
      *
-     * @param id the id of the vesselNameHistoryDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the vesselNameHistoryDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/vessel-name-histories/{id}")
-    @Timed
     public ResponseEntity<Void> deleteVesselNameHistory(@PathVariable Long id) {
         log.debug("REST request to delete VesselNameHistory : {}", id);
         vesselNameHistoryService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }

@@ -1,31 +1,8 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import io.github.jhipster.service.Criteria;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -35,14 +12,15 @@ import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
 /**
- * Criteria class for the Address entity. This class is used in AddressResource to
- * receive all the possible filtering options from the Http GET request parameters.
- * For example the following could be a valid requests:
- * <code> /addresses?id.greaterThan=5&amp;attr1.contains=something&amp;attr2.specified=false</code>
+ * Criteria class for the {@link com.cpi.common.domain.Address} entity. This class is used
+ * in {@link com.cpi.common.web.rest.AddressResource} to receive all the possible filtering options from
+ * the Http GET request parameters.
+ * For example the following could be a valid request:
+ * {@code /addresses?id.greaterThan=5&attr1.contains=something&attr2.specified=false}
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
-public class AddressCriteria implements Serializable {
+public class AddressCriteria implements Serializable, Criteria {
 
     private static final long serialVersionUID = 1L;
 
@@ -63,6 +41,26 @@ public class AddressCriteria implements Serializable {
     private LongFilter companyId;
 
     private LongFilter addressTypeId;
+
+    public AddressCriteria(){
+    }
+
+    public AddressCriteria(AddressCriteria other){
+        this.id = other.id == null ? null : other.id.copy();
+        this.name = other.name == null ? null : other.name.copy();
+        this.building = other.building == null ? null : other.building.copy();
+        this.street = other.street == null ? null : other.street.copy();
+        this.postbox = other.postbox == null ? null : other.postbox.copy();
+        this.zip = other.zip == null ? null : other.zip.copy();
+        this.city = other.city == null ? null : other.city.copy();
+        this.companyId = other.companyId == null ? null : other.companyId.copy();
+        this.addressTypeId = other.addressTypeId == null ? null : other.addressTypeId.copy();
+    }
+
+    @Override
+    public AddressCriteria copy() {
+        return new AddressCriteria(this);
+    }
 
     public LongFilter getId() {
         return id;

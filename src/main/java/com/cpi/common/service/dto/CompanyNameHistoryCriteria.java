@@ -1,31 +1,8 @@
-/*
- * Copyright (c)  2015-2018, All rights Reserved, Designed By Kang Biao
- * Email: alex.kangbiao@gmail.com
- * Create by Alex Kang on 18-12-18 上午9:40
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE
- */
-
 package com.cpi.common.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import io.github.jhipster.service.Criteria;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -36,14 +13,15 @@ import io.github.jhipster.service.filter.StringFilter;
 import io.github.jhipster.service.filter.InstantFilter;
 
 /**
- * Criteria class for the CompanyNameHistory entity. This class is used in CompanyNameHistoryResource to
- * receive all the possible filtering options from the Http GET request parameters.
- * For example the following could be a valid requests:
- * <code> /company-name-histories?id.greaterThan=5&amp;attr1.contains=something&amp;attr2.specified=false</code>
+ * Criteria class for the {@link com.cpi.common.domain.CompanyNameHistory} entity. This class is used
+ * in {@link com.cpi.common.web.rest.CompanyNameHistoryResource} to receive all the possible filtering options from
+ * the Http GET request parameters.
+ * For example the following could be a valid request:
+ * {@code /company-name-histories?id.greaterThan=5&attr1.contains=something&attr2.specified=false}
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
-public class CompanyNameHistoryCriteria implements Serializable {
+public class CompanyNameHistoryCriteria implements Serializable, Criteria {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,6 +40,25 @@ public class CompanyNameHistoryCriteria implements Serializable {
     private InstantFilter endDate;
 
     private LongFilter companyId;
+
+    public CompanyNameHistoryCriteria(){
+    }
+
+    public CompanyNameHistoryCriteria(CompanyNameHistoryCriteria other){
+        this.id = other.id == null ? null : other.id.copy();
+        this.updateTime = other.updateTime == null ? null : other.updateTime.copy();
+        this.updateUser = other.updateUser == null ? null : other.updateUser.copy();
+        this.companyName = other.companyName == null ? null : other.companyName.copy();
+        this.companyChineseName = other.companyChineseName == null ? null : other.companyChineseName.copy();
+        this.startDate = other.startDate == null ? null : other.startDate.copy();
+        this.endDate = other.endDate == null ? null : other.endDate.copy();
+        this.companyId = other.companyId == null ? null : other.companyId.copy();
+    }
+
+    @Override
+    public CompanyNameHistoryCriteria copy() {
+        return new CompanyNameHistoryCriteria(this);
+    }
 
     public LongFilter getId() {
         return id;
